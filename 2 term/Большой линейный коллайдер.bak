@@ -1,0 +1,82 @@
+program C;
+
+{$mode objfpc}{$H+}
+
+uses
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  cthreads,
+  {$ENDIF}{$ENDIF}
+  Classes, SysUtils, CustApp, math
+  { you can add units after this };
+
+procedure qsort(var m: array of Integer; l, r: integer);
+var
+  x, i, j, t: integer;
+begin
+  x := m[l+random(r-l+1)];
+  i := l;
+  j := r;
+  while (i < j) do begin
+    while m[i] < x do i:= i+1;
+    while m[j] > x do j:= j-1;
+    if i <= j then begin
+      t:= m[j];
+      m[j]:= m[i];
+      m[i]:= t;
+      i:= i+1;
+      j:= j-1;
+    end;
+  end;
+  if l < j then qsort(m, l, j);
+  if i < r then qsort(m, i, r);
+end;
+
+var
+  coord, time, types: integer;
+  buf: array of integer;
+  des: array of integer;
+  n, i, m, k, l: integer;
+  p, s: integer;
+
+begin
+  AssignFile(input, 'linear.in');
+  AssignFile(output, 'linear.out');
+  Reset(input);
+  Rewrite(output);
+
+  p:= -1;
+  s:= -1;
+  Readln(n);
+  SetLength(buf, n);
+  SetLength(des, n);
+  for i:= 0 to n-1 do begin
+    Read(coord);
+    Readln(types);
+    if types = 1 then begin
+      p:= p + 1;
+      buf[p]:= coord;
+    end;
+    if (types= -1) and (p >= 0) then begin
+      s:=s+1;
+      des[s]:= abs(coord - buf[p]);
+      p:=p-1;
+    end;
+  end;
+
+  qsort(des, 0, s);
+
+  k:= n;
+  l:= 0;
+  Readln(m);
+  for i:= 0 to m-1 do  begin
+    Read(time);
+    while (des[l] <= 2*time) and (l <= s) do begin
+      k:= max(k - 2, 0);
+      l:= l+1;
+    end;
+    writeln(k);
+  end;
+
+  close(input);
+  close(Output);
+end.

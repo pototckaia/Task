@@ -1,0 +1,27 @@
+program project1;
+var
+  f1, f2: TextFile;
+  w, h, n, l, r, x: Int64;
+  g: Double;
+
+begin
+  Assign(f1, 'diploma.in') ;
+  Assign(f2, 'diploma.out');
+  Reset(f1);
+  Rewrite(f2);
+
+  Read(f1, w, h, n);
+  L:= 0;
+  r:= 1000000000000000000 ;
+
+  while r - l > 1 do begin
+    x:= (r + l) div 2;
+    if  (x div w) >= n * (h div h) then
+      r:= x
+    else
+      l:= x;
+  end;
+Write(f2, r);
+close(f1);
+close(f2);
+end.

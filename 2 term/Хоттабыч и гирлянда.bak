@@ -1,0 +1,173 @@
+program B2;
+
+{$mode objfpc}{$H+}
+
+
+uses
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  cthreads,
+  
+{$ENDIF}{$ENDIF}
+  Classes, SysUtils, CustApp
+  { you can add units after this };
+
+const
+  no_color = -1;
+  no_couple = -2;
+  max = 20000;
+
+type
+  ar = array of integer;
+  arr = array of ar;
+
+function lin_search(m: array of string; x: string): integer;
+var
+   i: integer;
+begin
+  for i:= 0 to High(m) do
+    if (m[i] = x) then begin
+      result:= i;
+      exit;
+    end;
+  result:= no_color;
+end;
+
+function bin_search(m: array of string; x: string; l, r: integer): integer;
+var
+   med: integer;
+begin
+  while (r-l > 1) do begin
+    med:= (r+l) div 2;
+    if (m[med] > x) then
+      r:= med
+    else
+      l:= med;
+  end;
+  if m[l] = x then
+    result:= l
+  else
+    result:= no_color;
+end;
+
+function ter_search(m: array of integer; x: integer; l, r: integer): integer;
+var
+  m1, m2: integer;
+begin
+  while (r-l > 1) do begin
+    m1:= (2*l+r) div 3;
+    m2:= (l+2*r) div 3;
+    if (abs(m[m1] - x)) - (abs(m[m2] - x)) < 0 then
+      r:= m2
+    else
+      l:= m1;
+  end;
+  result:= (l+r) div 2;
+end;
+
+procedure qsort(var m: array of string; var b: arr; l, r: integer);
+var
+  x: string;
+  i, j: integer;
+  t: string;
+  buf: ar;
+begin
+  x := m[(l + r) div 2];
+  i := l;
+  j := r;
+  while (i < j) do begin
+    while m[i] < x do i:= i+1;
+    while m[j] > x do j:= j-1;
+    if i <= j then begin
+      t:= m[j];
+      m[j]:= m[i];
+      m[i]:= t;
+
+      buf:= b[j];
+      b[j]:= b[i];
+      b[i]:= buf;
+
+      inc(i);
+      dec(j);
+    end;
+  end;
+  if l < j then qsort(m, b, l, j);
+  if i < r then qsort(m, b, i, r);
+end;
+
+var
+ i, j, h, n, m: integer;
+ garland: array of string;
+ balls: array of string;
+ inquiry: array of array [0..1] of string;
+ position: arr;
+ k, l, min, buf, pos: integer;
+
+begin
+  AssignFile(input, 'input.txt');
+  AssignFile(output, 'output.txt');
+  Reset(input);
+  Rewrite(output);
+
+  Readln(n);
+  SetLength(garland, n);
+  for i:=0 to n-1 do begin
+    Readln(garland[i]);
+    pos:= lin_search(balls, garland[i]);
+    if (pos = no_color) then begin
+      SetLength(balls, length(balls) + 1);
+      balls[High(balls)]:= garland[i];
+      SetLength(position, length(position) + 1);
+      SetLength(position[High(position)], Length(position[High(position)]) + 1);
+      position[High(position)][High(position[High(position)])]:= i;
+    end else begin
+      SetLength(position[pos], Length(position[pos]) + 1);
+      position[pos][High(position[pos])]:= i;
+    end;
+  end;
+
+  qsort(balls, position, 0, length(balls) - 1);
+  for i:= 0 to high(position) do     begin
+    for j:= 0 to high(position[i]) do
+      write(position[i][j], ' ');
+    writeln(balls[i]);
+  end;
+  Readln(m);
+  Setlength(inquiry, m);
+  for i:=0 to m-1 do begin
+    Readln(inquiry[i][0]); Readln(inquiry[i][1]);
+    k:= bin_search(balls, inquiry[i][0], 0, Length(balls));
+    l:= bin_search(balls, inquiry[i][1], 0, Length(balls));
+
+    if (k = -1) or (l = -1) then begin
+      WriteLn(no_color);
+      Continue;
+    end;
+
+    min:= max;
+
+    if (k = l) then begin
+      for j:= 0 to high(position[k])-1 do begin
+        buf:= abs(position[k][j]-position[k][j+1]) - 1;
+        if buf < min then
+          min:= buf;
+      end;
+      if min <> max then
+        writeln(min)
+      else
+        writeln(no_couple);
+      Continue;
+    end;
+
+    for j:= 0 to high(position[k]) do begin
+      pos:= ter_search(position[l], position[k][j], 0, length(position[l]));
+      buf:= abs(position[k][j] - position[l][pos]);
+      if buf < min then
+        min:= buf;
+    end;
+    writeln(min);
+  end;
+
+
+  close(input);
+  close(output);
+end.
