@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/4.cpp
+cstdlib
+-
+vector
+-
+iostream
+-
+omp.h
+-
+chrono
+-
+iomanip
+-
+helper.h
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/helper.h
+climits
+-
+
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/helper.h
+iomanip
+-
+iostream
+-
+

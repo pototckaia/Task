@@ -1,0 +1,1 @@
+/usr/bin/c++   -fopenmp -g    CMakeFiles/openMP3.dir/3.cpp.o  -o openMP3 

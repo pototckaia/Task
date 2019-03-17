@@ -1,0 +1,8 @@
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/openMP6.dir
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/openMP1.dir
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/openMP5.dir
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/openMP2.dir
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/openMP3.dir
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/openMP4.dir

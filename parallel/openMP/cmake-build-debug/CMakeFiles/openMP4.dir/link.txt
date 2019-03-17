@@ -1,0 +1,1 @@
+/usr/bin/c++   -fopenmp -g    CMakeFiles/openMP4.dir/4.cpp.o  -o openMP4 
