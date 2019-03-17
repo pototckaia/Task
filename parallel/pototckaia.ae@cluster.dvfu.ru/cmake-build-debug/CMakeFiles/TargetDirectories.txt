@@ -1,0 +1,3 @@
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/@home/oem/Documents/Homeworks/lab paralel/openMP/cmake-build-debug/CMakeFiles/openMP.dir
