@@ -1,1 +1,0 @@
-/usr/bin/c++   -fopenmp -g    CMakeFiles/openMP2.dir/2.cpp.o  -o openMP2 

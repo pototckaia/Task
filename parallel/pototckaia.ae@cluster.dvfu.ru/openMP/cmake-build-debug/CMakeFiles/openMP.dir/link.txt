@@ -1,1 +1,0 @@
-/usr/bin/c++   -fopenmp -g    CMakeFiles/openMP.dir/1.cpp.o  -o openMP 
