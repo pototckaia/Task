@@ -1,10 +1,9 @@
-#include <stdio.h>
+#include <iostream>
 #include <omp.h>
-#include <chrono>
 #include <vector>
-#include "helper.h"
-#include <regex>
 #include <queue>
+#include <stdexcept>
+#include <string>
 
 double call(char s, double a, double b) {
   switch (s) {
@@ -84,31 +83,38 @@ double parse(std::string& t, double prev_result) {
   return call(op, value1, value2);
 }
 
-//Написать программу, которая создает «серверный» поток, выполняющий элементарные
-//математические операции (сложение, вычитание, умножение, деление) и «клиентский» поток,
-//который последовательно отсылает операции, требуемые для выполнения.
-//После завершения всех созданных потоков вывести результат «res» на консоль.
 int main(int argc, char* argv[]) {
   std::vector<std::string> t{"5 + 1",
                             "res / 2",
                             "24 / res",
                             "res * res",
-                            "res - 6"};
+                            "res - 6",
+                            " res - 6  ",
+                            "res - 6",
+                            "res - 6",
+                            "res - 6",};
 
   std::queue<std::string> tasks;
-  double res = 0;
+  std::queue<double> results;
 
-#pragma omp sections
+#pragma omp parallel sections
   {
 #pragma omp section
     {
-      for (auto& e: t) {
+      for (auto iter = t.begin(); iter != t.end(); ++iter) {
+        auto& e = *iter;
         tasks.push(e);
+        std::cout << "Client: Send task: " << e << std::endl;
+        // wait run
+        while (results.empty()) {}
+        std::cout << "Client: Get result: " << results.front() << std::endl;
+        results.pop();
       }
       tasks.push("");
     }
 #pragma omp section
     {
+      double prev_res = 0;
       while (true) {
         if (tasks.empty()) {
           continue;
@@ -118,8 +124,10 @@ int main(int argc, char* argv[]) {
         if (task.empty()) {
           break;
         }
-        res = parse(task, res);
-        std::cout << "Answer: " << res << std::endl;
+        std::cout << "Server: Run task: " << task << std::endl;
+        prev_res = parse(task, prev_res);
+        std::cout << "Server: Send result: " << prev_res << std::endl;
+        results.push(prev_res);
       }
     }
   }

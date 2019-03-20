@@ -26,10 +26,27 @@ void printHeader() {
   printNewLine();
 }
 
+void printHeader5() {
+  printElement("Thread");
+  printElement("Type");
+  printElement("Result");
+  printElement("Duration (ms)");
+  printNewLine();
+}
+
 
 template <typename T, typename D>
 void printLine(long j, T result, D duration) {
   printElement(j);
+  printElement(result);
+  printElement(duration);
+  printNewLine();
+}
+
+template <typename T, typename D>
+void printLine(long j, std::string type, T result, D duration) {
+  printElement(j);
+  printElement(type);
   printElement(result);
   printElement(duration);
   printNewLine();
