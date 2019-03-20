@@ -1,9 +1,6 @@
-#include <cstdlib>
 #include <vector>
-#include <iostream>
 #include <omp.h>
 #include <chrono>
-#include <iomanip>
 #include "helper.h"
 
 
