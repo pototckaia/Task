@@ -1,21 +1,30 @@
-#include <cstdlib>
 #include <vector>
 #include <iostream>
 #include <omp.h>
 #include <chrono>
-#include <iomanip>
 #include "helper.h"
-#include <climits>
 
 long max_parallel(long N, int thread) {
   std::vector<long> A(N, 1);
   A[1] = N;
   long max_val = 0;
 
-#pragma omp parallel for num_threads(thread) reduction(max:max_val)
+#pragma omp parallel num_threads(thread)
+  {
+    long loc_max_val = 0;
+#pragma omp for
     for (int i = 0; i < N; ++i) {
-      max_val = std::max(A[i], max_val);
+      if (A[i] > loc_max_val)
+        loc_max_val = A[i];
     }
+
+#pragma omp critical
+    {
+      if (loc_max_val > max_val) {
+        max_val = loc_max_val;
+      }
+    }
+  }
 
   return max_val;
 }
