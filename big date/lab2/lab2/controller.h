@@ -1,17 +1,41 @@
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#pragma once
 
 #include <QObject>
+#include <QString>
+#include <QtCore>
 
-class Controller : public QObject
+#include <QVector>
+#include <fstream>
+
+
+class DataObject : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(int rows MEMBER rows CONSTANT)
+    Q_PROPERTY(int cols MEMBER cols CONSTANT)
+    Q_PROPERTY(int frame_count MEMBER frame_count CONSTANT)
+    Q_PROPERTY(QVariantList frame READ getNextFrame)
+
 public:
-    explicit Controller(QObject *parent = nullptr);
+    DataObject(QObject *parent = nullptr);
 
-signals:
+    QVariantList getNextFrame();
+    bool end() { return isEnd; }
 
-public slots:
+
+private:
+    int rows;
+    int cols;
+    int frame_count;
+    const std::string fileName = "./file3_1000_563.json";
+    long beginkg = 0;
+
+   private:
+    bool isEnd = false;
+    std::ifstream file;
+
+    QVariantList getArrayInt();
+    void skipSpace(char c = ' ');
+
 };
-
-#endif // CONTROLLER_H
