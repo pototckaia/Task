@@ -4,7 +4,8 @@
 #include <QtCore/qmetatype.h>
 #include <QQmlContext>
 
-#include "controller.h"
+#include "imageprovider.h"
+#include "liveimage.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,12 +13,19 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    qmlRegisterType<DataObject>("org.qmlplayground.dataObject", 0, 1, "DataObject");
+    qmlRegisterType<LiveImage>("org.qmlplayground.liveimage", 1, 0, "LiveImage");
+    ImageProvider provider;
+    engine.rootContext()->setContextProperty("LiveImageProvider", &provider);
+
+//    QTimer::singleShot(1000, [&provider](){
+//        provider.changeFrame();
+//    });
+
     engine.load(QUrl(QStringLiteral("qrc:/base.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    QObject *rootObject = qobject_cast<QObject*>(engine.rootObjects().first());
+//    QObject *rootObject = qobject_cast<QObject*>(engine.rootObjects().first());
 
     return app.exec();
 }

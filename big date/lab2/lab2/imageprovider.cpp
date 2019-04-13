@@ -1,13 +1,15 @@
-#include "controller.h"
+#include "imageprovider.h"
 
 #include <QColor>
+#include <QPoint>
+#include <QImage>
 #include <QtCore>
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <cctype>
 
-DataObject::DataObject(QObject *parent)
+ImageProvider::ImageProvider(QObject *parent)
   : QObject(parent), file(fileName) {
   skipSpace('{'); // begin - {
 
@@ -33,16 +35,22 @@ DataObject::DataObject(QObject *parent)
   file.get(); // [
 
   beginkg = file.tellg();
+  img = QImage(this->cols, this->rows, QImage::Format_RGB888);
 }
 
-QVariantList DataObject::getNextFrame() { // [...]
-  QVariantList f;
+void ImageProvider::changeFrame() { // [...]
   skipSpace(); // begin frame -'['
   file.get(); // '['
 
+  int i = 0;
   while (file.peek() != ']') {
-    f << QVariant::fromValue(getColor());
+    auto color = getColor();
+    int row = i % this->cols;
+    int col = i / this->rows;
+    this->img.setPixelColor(col, row, color);
+
     skipSpace(',');
+    ++i;
   }
 
   file.get(); // end frame - ']'
@@ -54,10 +62,10 @@ QVariantList DataObject::getNextFrame() { // [...]
     file.seekg(beginkg);
   }
 
-  return f;
+  emit imageChanged();
 }
 
-QColor DataObject::getColor() {
+QColor ImageProvider::getColor() {
   skipSpace();
   if (file.peek() != '[') {
     throw std::logic_error("ArrayInt begin not [");
@@ -77,7 +85,7 @@ QColor DataObject::getColor() {
   return color;
 }
 
-void DataObject::skipSpace(char c) {
+void ImageProvider::skipSpace(char c) {
     while (std::isspace(file.peek()) || file.peek() == c) {
       file.get();
     }
