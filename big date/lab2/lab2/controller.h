@@ -28,14 +28,14 @@ private:
     int rows;
     int cols;
     int frame_count;
-    const std::string fileName = "./file3_1000_563.json";
-    long beginkg = 0;
+    const std::string fileName = "file1_50_50.json";
+    long long beginkg = 0;
 
    private:
     bool isEnd = false;
     std::ifstream file;
 
-    QVariantList getArrayInt();
+    QColor getColor();
     void skipSpace(char c = ' ');
 
 };

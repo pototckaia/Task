@@ -68,9 +68,8 @@ ApplicationWindow {
           for (var i = 0; frame && i < frame.length; ++i) {
               var col = Math.trunc(i % data.cols)
               var row = Math.trunc(i / data.rows)
-              var rgba = frame[i]
-              var color = Qt.rgba(rgba[0], rgba[1], rgba[2], rgba[3])
-
+              var color = frame[i]
+              console.log(color)
               canvas.fillRect(col, row, color)
           }
           var end = Date.now()

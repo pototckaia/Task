@@ -1,10 +1,11 @@
 #include "controller.h"
 
+#include <QColor>
 #include <QtCore>
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
-
+#include <cctype>
 
 DataObject::DataObject(QObject *parent)
   : QObject(parent), file(fileName) {
@@ -40,21 +41,7 @@ QVariantList DataObject::getNextFrame() { // [...]
   file.get(); // '['
 
   while (file.peek() != ']') {
-    auto rgb = getArrayInt();
-
-    double lowest = std::min(std::min(rgb.at(0).toDouble(), rgb.at(1).toDouble()), rgb.at(2).toDouble());// red, green, blue
-    double a = (255 - lowest) / 255;
-    double r = (rgb.at(0).toDouble() - lowest) / a;
-    double g = (rgb.at(1).toDouble() - lowest) / a;
-    double b = (rgb.at(2).toDouble() - lowest) / a;
-
-    rgb[0] = r;
-    rgb[1] = g;
-    rgb[2] = b;
-    rgb << QVariant::fromValue(a);
-
-    f << QVariant::fromValue(rgb);
-
+    f << QVariant::fromValue(getColor());
     skipSpace(',');
   }
 
@@ -70,23 +57,24 @@ QVariantList DataObject::getNextFrame() { // [...]
   return f;
 }
 
-QVariantList DataObject::getArrayInt() {
-  QVariantList array;
+QColor DataObject::getColor() {
   skipSpace();
   if (file.peek() != '[') {
     throw std::logic_error("ArrayInt begin not [");
   }
   file.get(); // '['
 
+  std::vector<int> rgb;
   while(file.peek() != ']') {
     skipSpace(',');
     int number;
     file >> number;
-    array << QVariant::fromValue(number);
+    rgb.push_back(number);
   }
 
+  QColor color(rgb.at(0), rgb.at(1), rgb.at(2));
   file.get(); // ']'
-  return array;
+  return color;
 }
 
 void DataObject::skipSpace(char c) {
