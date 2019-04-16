@@ -8,10 +8,11 @@ void n(int n) {
 }
 
 template<typename T> void printElement(T t) {
-  const long width = 15;
+  const long width = 20 ;
   const char separator = ' ';
   const char barrier = '|';
-  std::cout << std::right << std::setw(width) << std::setfill(separator) << t << barrier ;
+  std::cout << std::right << std::setw(width) << std::setfill(separator) << std::setprecision(4) 
+            << t << barrier ;
 }
 
 void printNewLine() {
