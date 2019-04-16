@@ -4,11 +4,18 @@
 #include <string>
 #include <fstream>
 
+struct nodeGraph {
+	long long id;
+	std::vector<long long> friends;
+	bool isUsed = false;
+};
+
+
 class GraphParser  {
  public:
 	GraphParser(std::string);
 
-	std::pair<long long, std::vector<long long>> getLine();
+	nodeGraph getLine();
 	bool isEnd() { return isEnd_; }
 
  private:

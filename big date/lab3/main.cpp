@@ -1,16 +1,41 @@
 #include <iostream>
+#include <map>
 #include "GraphParser.h"
 
-int main() {
+using Graph = std::vector<nodeGraph>;
+using ToIndex = std::map<long long, std::size_t>;
 
-	GraphParser p("graph_small.txt");
+void dfs(long long id, Graph& graph, ToIndex& toIndex) {
+	auto index = toIndex[id];
+	graph[index].isUsed = true;
+	for (auto e: graph[index].friends) {
+		if (toIndex.count(e) && !graph[toIndex[e]].isUsed) {
+			dfs(graph[toIndex[e]].id, graph, toIndex);
+		}
+	}
+}
+
+
+int main() {
+	GraphParser p("graph.txt");
+
+	Graph graph;
+	ToIndex  toIndex;
 
 	while (!p.isEnd()) {
-		auto t = p.getLine();
-		std::cout << t.first << ": ";
-		for (auto& e: t.second) {
-			std::cout << e << " ";
-		}
-		std::cout << std::endl;
+		graph.push_back(p.getLine());
+		toIndex.emplace(graph.back().id, graph.size() - 1);
 	}
+
+	long long count_comp = 0;
+	for (auto& e: graph) {
+		if (!e.isUsed){
+			++count_comp;
+			dfs(e.id, graph, toIndex);
+		}
+	}
+
+	std::cout << "Компонент связности: "
+			  << count_comp << std::endl;
+
 }
