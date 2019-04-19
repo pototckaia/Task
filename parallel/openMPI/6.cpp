@@ -30,6 +30,7 @@ int main(int argc, char **argv) {
 
 		long N = std::atol(argv[l]);;	
 		Vec A(N, 1.0), B(N, 1.0);
+		
 		if (rank == 0) {
 			printElement("Rank");
 			printElement("Duration (ms)");
