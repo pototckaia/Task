@@ -1,10 +1,3 @@
-// MPI. Параллельный ввод/вывод. Работа с файлами. Доступ к данным. Буферизованное чтение из файла
-
-// Написать функцию, которая будет создавать файл "file.txt" со случайным содержимым (либо с
-// определенным текстом). Функция должна выполняться до считывания содержимого файла программой. +++
-// Программу запускать на одном процессе. Проверить, правильно ли выводится содержимое файла. Добавить
-// опцию, которая будет удалять файл при закрытии.
-
 #include <iostream>
 #include <string>
 #include "mpi.h"
@@ -47,16 +40,12 @@ int main(int argc, char **argv) {
 			MPI_INFO_NULL, &fh);
 	
 
-// fh, disp - смещение, etype - элементарный тип данных, 
-// filetype -  тип файла, datarep - представление данных 
-// info - информационнный объект	
 	MPI_File_set_view(fh, 0, MPI_CHAR, MPI_CHAR, "native", MPI_INFO_NULL);
 
 	int sum = 0, num;
 	MPI_Status status;
 	char buf[BUFSIZE];
 	do{
-// дескриптор, начальный адрес буфера, количество элементов, тип данных, объект состояния
 		MPI_File_read(fh, buf, BUFSIZE, MPI_CHAR, &status);
 		MPI_Get_count(&status, MPI_CHAR, &num);
 	
@@ -80,12 +69,3 @@ int main(int argc, char **argv) {
 	
 	MPI_Finalize();
 }
-
-
-// MPI_File_write
-// fh, buf, count, datatype, status
-
-// MPI_File_seek
-// fh, offset, whehence
-// дескриптор, смещение, тип обновления
-// изменение индивидуального файлового указателя относительно аргумента whence
