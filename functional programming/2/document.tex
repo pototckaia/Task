@@ -1,0 +1,66 @@
+\documentclass[a4paper,14pt]{scrreprt}
+
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=3cm,bindingoffset=0cm]{geometry}
+\usepackage{polyglossia}
+\usepackage[nointegrals]{wasysym}
+\usepackage{fontspec}
+
+\setmainfont{Liberation Serif}
+\setsansfont{Liberation Sans}
+\setmonofont{Liberation Mono}
+\newfontfamily\cyrillicfont{Liberation Sans}
+\defaultfontfeatures{Scale=MatchLowercase, Mapping=tex-text}
+
+\setmainlanguage{russian}
+\setotherlanguage{english}
+\setkeys{russian}{babelshorthands=true}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+
+% Title Page
+\title{Домашняя работа № 2}
+\author{Потоцкая Анастасия\\Б8303а}
+
+\newcommand{\lmd}{\lambda}
+\newcommand{\un}{\underline}
+
+\DeclareMathOperator{\msucc}{succ}
+
+\begin{document}
+\maketitle
+
+\section*{№6}
+Добавим аксиому $\lmd xy.x=\lmd xy.y$. Доказать, что тогда любые 2 терма равны.
+
+Доказательство: 
+	$$ \forall M,N: \ (\lmd xy.x)MN \to_\beta M; \; (\lmd xy.y)MN \to_\beta N \Rightarrow M = N$$
+
+\section*{№7}
+Задача: показать верность определения $\text{mult}\equiv\lmd mnfx.m(nf)x$
+
+Решение:
+\begin{align*}
+	\text{mult}\ \un{m} \ \un{n} &\to \lmd fx.\un{m}(\un{n}f)x \to \lmd fx.(\lmd fx.f^m x)(\un{n}f)x\to\\
+	&\to\lmd fx.(\un{n}f)^m x\to \lmd fx.(f^n)^m \to \lmd fx. f^{nm} x= \un{m} \ \un{n}
+\end{align*}
+
+\section*{№8}
+Задача: показать верность определения $\text{exp}\equiv\lmd mnfx.nmfx=m^n$
+
+Решение:
+\begin{align*}
+\text{exp}\ \un{m}\ \un{n} &\to \lmd fx.\un{n} \ \un{m}fx\to \lmd fx.(\lmd fx.f^nx)\un{m}fx\to\\
+&\to \lmd fx.\un{m}^nfx \to \lmd fx.f^{m^n}x=\un{m}^n
+\end{align*}
+
+\section*{№9}
+Задача: показать, что $ \un{m} \msucc \un{n} \equiv  \un{m} + \un{n}$.
+Решение:
+$$ \msucc \un{n} \to \lmd fx.f(\un{n}fx) \to \lmd fx.f(f^nx) \equiv \lmd fx.f^{n+1}x \equiv \un{n+1}$$
+$$ \un{m} \msucc \un{n} \to \msucc^{m} \un{n} \to \msucc^{m-1}(\msucc \un{n}) \to $$
+$$ \to \msucc^{m-1} \un{n + 1} \to \dots \to \un{n+m} $$
+
+\end{document}

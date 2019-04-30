@@ -1,0 +1,173 @@
+#lang racket
+
+
+(define (привет имя)
+  (display "Привет, ")
+  (display имя)
+  (display "!")
+  (newline))
+
+(define (пользователь)
+  (write "Представьтесь:")
+  (read))
+
+(привет (пользователь))
+
+; Number
+; 1       3.14
+; 1/2     6.02e+23
+; 1+2i    9999999999999999999999
+
+; Boolean
+; #t
+; #f
+
+; "Hello, world!"
+; "Benjamin \"Bugsy\" Siegel"
+; "λx:(μα.α→α).xx"
+
+(define pie 3)             ; defines pie to be 3
+ 
+(define (piece str)        ; defines piece as a function
+  (substring str 0 pie))   ;  of one argument
+
+
+(define (bake flavor)
+  (printf "preheating oven...\n")
+  (string-append flavor " pie"))
+
+(define (reply s)
+  (if (equal? "hello" (substring s 0 5))
+      "hi!"
+      "huh?"))
+
+(define (reply-more s)
+  (cond
+   [(equal? "hello" (substring s 0 5))
+    "hi!"]
+   [(equal? "goodbye" (substring s 0 7))
+    "bye!"]
+   [(equal? "?" (substring s (- (string-length s) 1)))
+    "I don't know"]
+   [else "huh?"]))
+ 
+
+(define (double v)
+  ((if (string? v) string-append +) v v))
+ 
+(double "mnah")
+
+
+(define (twice f v)
+  (f (f v)))
+
+(twice (lambda (s) (string-append s "?!"))
+         "hello")
+
+(define (make-add-suffix s2)
+  (lambda (s) (string-append s s2)))
+(twice (make-add-suffix "!") "hello")
+
+
+; local define
+(define (converse s)
+  (define (starts? s2) ; local to converse
+    (define len2 (string-length s2))  ; local to starts?
+    (and (>= (string-length s) len2)
+         (equal? s2 (substring s 0 len2))))
+  (cond
+   [(starts? "hello") "hi!"]
+   [(starts? "goodbye") "bye!"]
+   [else "huh?"]))
+
+; internal defines
+
+(let ([x (random 4)]
+        [o (random 4)])
+    (cond
+     [(> x o) "X wins"]
+     [(> o x) "O wins"]
+     [else "cat's game"]))
+
+; list fuction
+
+(first (list 1 2 3))
+(rest (list 1 2 3))
+
+(list "red" "green" "blue")
+; count the elements
+(length (list "hop" "skip" "jump"))        
+; extract by position
+(list-ref (list "hop" "skip" "jump") 0)    
+(list-ref (list "hop" "skip" "jump") 1)
+; combine lists
+(append (list "hop" "skip") (list "jump")) 
+; reverse order
+(reverse (list "hop" "skip" "jump"))       
+; check for an element
+(member "fall" (list "hop" "skip" "jump")) 
+
+; map
+
+(map sqrt (list 1 4 9 16))
+(map (lambda (i) (string-append i "!"))
+     (list "peanuts" "popcorn" "crackerjack"))
+
+(andmap string? (list "a" "b" "c"))
+(andmap string? (list "a" "b" 6))
+(ormap number? (list "a" "b" 6))
+
+(map (lambda (s n) (substring s 0 n))
+     (list "peanuts" "popcorn" "crackerjack")
+     (list 6 3 7))
+
+; filter
+
+(filter string? (list "a" "b" 6))
+
+(foldl (lambda (elem v) (+ v (* elem elem)))
+        0
+        '(1 2 3))
+
+
+; empty
+(cons "head" empty)
+(cons "dead" (cons "head" empty))
+
+(empty? empty)
+(empty? (cons "head" empty))
+(cons? empty)
+(cons? (cons "head" empty))
+
+; custom function
+
+(define (my-length lst)
+  (cond
+   [(empty? lst) 0]
+   [else (+ 1 (my-length (rest lst)))]))
+
+(define (my-map f lst)
+  (cond
+   [(empty? lst) empty]
+   [else (cons (f (first lst))
+               (my-map f (rest lst)))]))
+
+; tail recursion
+
+(define (my-length lst)
+  ; local function iter:
+  (define (iter lst len)
+    (cond
+     [(empty? lst) len]
+     [else (iter (rest lst) (+ len 1))]))
+  ; body of my-length calls iter:
+  (iter lst 0))
+
+(define (my-map f lst)
+  (define (iter lst backward-result)
+    (cond
+     [(empty? lst) (reverse backward-result)]
+     [else (iter (rest lst)
+                 (cons (f (first lst))
+                       backward-result))]))
+  (iter lst empty))  

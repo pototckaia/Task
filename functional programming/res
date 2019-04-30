@@ -1,0 +1,46 @@
+
+ 
+ 36	 	 2.37: оопределить операции на векторах и матрицах, представленных в виде списков или списков списков (по строкам):
+ (define (dot-product v w)
+    (accumulate + 0 (append-n <??> <??> (list v w) )))
+
+(define (matrix-*-vector m v)
+(map <??> m))
+
+(define (transpose mat)
+(accumulate-n <??> <??> mat))
+
+(define (matrix-*-matrix m n)
+    (let ((cols (transpose n)))
+        (map <??> m)))	 
+ 37	 	 2.38: 
+1) 
+fold-right=accumulate 
+(define (accumulate op init x)
+  (if (null? x)
+      init
+      (op (car x)
+          (accumulate op init (cdr x)))))
+Таким образом, при оценке 
+(fold-right op init x)
+ для x=(x1,x2,...,xn) формируется и затем оценивается выражение
+(op x1 (op x2 (op ...(op xn init)...)))
+2)
+(define (fold-left op init x)
+    (define (iter result rest)
+        (if (null? rest)
+            result
+            (iter (op result (car rest))  (cdr rest))))
+(iter init x))
+Таким образом, при оценке 
+(fold-left op init x)
+ для x=(x1,x2,...,xn) формируется и затем оценивается выражение
+(op (...  (op (op init x1) x2)...) xn)
+3)
+Объяснить результаты оценок выражений
+(fold-right / 1 (list 1 2 3 4))
+(fold-left / 1 (list 1 2 3 4))
+(fold-right list nil (list 1 2 3 4))
+(fold-left list nil (list 1 2 3 4)
+4)
+Какими свойствами должна обладать бинарная операция op, чтобы результаты fold-right и fold-left для нее совпадали для всех начальных значений и списков (с доказательством, начиная 1, 2 и т.д. элементов в списке)?

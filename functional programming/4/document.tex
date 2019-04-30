@@ -1,0 +1,93 @@
+\documentclass[a4paper,14pt]{scrreprt}
+
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=3cm,bindingoffset=0cm]{geometry}
+\usepackage{polyglossia}
+\usepackage[nointegrals]{wasysym}
+\usepackage{fontspec}
+
+\setmainfont{Liberation Serif}
+\setsansfont{Liberation Sans}
+\setmonofont{Liberation Mono}
+\newfontfamily\cyrillicfont{Liberation Sans}
+\defaultfontfeatures{Scale=MatchLowercase, Mapping=tex-text}
+
+\setmainlanguage{russian}
+\setotherlanguage{english}
+\setkeys{russian}{babelshorthands=true}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+
+% Title Page
+\title{Домашняя работа № 4}
+\author{Потоцкая Анастасия\\Б8303а}
+
+\newcommand{\lmd}{\lambda}
+\newcommand{\un}[1]{\underline{#1}}
+
+\usepackage{tikz}
+
+
+\DeclareMathOperator{\fact}{fact}
+\DeclareMathOperator{\false}{false}
+\DeclareMathOperator{\true}{true}
+\DeclareMathOperator{\pair}{pair}
+\DeclareMathOperator{\mif}{if}
+\DeclareMathOperator{\mnot}{not}
+\DeclareMathOperator{\miszero}{iszero?}
+\DeclareMathOperator{\mmult}{mult}
+\DeclareMathOperator{\mpre}{pre}
+
+
+\begin{document}
+\maketitle
+\section*{№15}
+Построить решение для уравнения для $ \fact$ и проверить его.
+	$$ \fact \equiv Y ( \lmd gn. \mif (\miszero n)\un{1} (\mmult n (g(\mpre n)))) $$
+	$$ \text{по свойству оператора  } Y : YF = F(YF) $$
+	$$ ( \lmd gn. \mif (\miszero n)\un{1} (\mmult n (g(\mpre n)))) (Y ( \lmd gn. \mif (\miszero n)\un{1} (\mmult n (g(\mpre n))))) \to $$
+	$$ \lmd n. \mif (\miszero n)\un{1} (\mmult n Y ( \lmd gn. \mif (\miszero n)\un{1} (\mmult n (g(\mpre n)))) ) \to $$
+	$$ \lmd n. \mif (\miszero n)\un{1} (\mmult n (\fact(\mpre n)) )$$
+
+\section*{№16}
+Доказать, что терм $ \Theta = A A $ , где $ A=\lmd xy. y(xxy)$ есть комбинатор неподвижной точки.
+$$ \Theta F \equiv AAF \to (\lmd xy.y(xxy))(\lmd xy.y(xxy))F \to $$
+$$ \to F((\lmd xy.y(xxy))(\lmd xy.y(xxy))F ) \to F(AAF) \equiv F(\Theta F) $$
+Доказано, что терм $ \Theta $ есть комбинатор неподвижной точки.
+
+\section*{№17}
+Определены ли термы:
+\begin{enumerate}
+	\item $Y \equiv \lmd f.(\lmd x.f(xx))(\lmd x.f(xx))$ \\
+	$Y \to \lmd f.f((\lmd x.f(xx))(\lmd x.f(xx)))$ - HNF. Терм определен.
+	
+	\item $Y \mnot \equiv (\lmd f.(\lmd x.f(xx))(\lmd x.f(xx))) \mnot$
+		$$ Y\mnot \to (\lmd x.\mnot(xx))(\lmd x.\mnot(xx)) \to $$
+		$$ \to  \mnot((\lmd x.\mnot(xx))(\lmd x.\mnot(xx))) \to $$
+		$$ \to  (\lmd x.\mif x \false\true)((\lmd x.\mnot(xx))(\lmd x.\mnot(xx))) \to $$
+		$$ \to  \mif ((\lmd x.\mnot(xx))(\lmd x.\mnot(xx))) \false\true\to $$
+		$$ \to ((\lmd x.\mnot(xx))(\lmd x.\mnot(xx))) \false\true \to $$
+		$$ \to   Y\mnot \false \true $$
+	После normal order reduction пришли к тому же уравнению. Значит $Y \mnot $ не имеет HNF. Терм не определен.
+
+	\item $K \equiv\ lmd xy.x$ \\ Терм в HNF.Терм определен.
+	
+	\item $YI \equiv (\lmd f.(\lmd x.f(xx))(\lmd x.f(xx)))(\lmd x.x)$
+		$$ YI \to (\lmd x.(\lmd x.x)(xx))(\lmd x.(\lmd x.x)(xx)) \to $$
+		$$ \to  (\lmd x.(xx)) (\lmd x.(xx)) \equiv \Omega $$
+	$\Omega$ не имеет HNF. Терм не определен.
+	
+	\item $x\Omega \equiv \lmd.x\Omega$ - HNF. Терм определен.
+	
+	\item $YK\equiv(\lmd f.(\lmd x.f(xx))(\lmd x.f(xx)))(\lmd xy.x)$
+	$$ YK\to(\lmd x.(\lmd xy.x)(\un{x} \un{x} )) \un{(\lmd x.(\lmd xy.x)(xx))} \to $$
+	$$ \to (\lmd xy.x) ((\lmd x.(\lmd xy.x)(xx))(\lmd x.(\lmd xy.x)(xx))) \to $$
+	$$ \to \lmd y. ((\lmd x.(\lmd xy.x)(xx))(\lmd x.(\lmd xy.x)(xx))) \to \lmd y.YK$$
+	После normal order reduction пришли к тому же уравнению. Значит $YK$ не имеет HNF. Терм не определен.
+	
+	\item $\un{n} \equiv \lmd fx.f^n x \equiv \lmd fx.f(f(\dots f(fx)))$ - HNF. Терм определен.
+
+\end{enumerate}
+\end{document}

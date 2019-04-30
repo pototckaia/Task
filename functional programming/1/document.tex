@@ -1,0 +1,106 @@
+\documentclass[a4paper,14pt]{scrreprt}
+
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=3cm,bindingoffset=0cm]{geometry}
+\usepackage{polyglossia}
+\usepackage[nointegrals]{wasysym}
+\usepackage{fontspec}
+
+\setmainfont{Liberation Serif}
+\setsansfont{Liberation Sans}
+\setmonofont{Liberation Mono}
+\newfontfamily\cyrillicfont{Liberation Sans}
+\defaultfontfeatures{Scale=MatchLowercase, Mapping=tex-text}
+
+\setmainlanguage{russian}
+\setotherlanguage{english}
+\setkeys{russian}{babelshorthands=true}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+
+% Title Page
+\title{Домашняя работа № 1}
+\author{Потоцкая Анастасия\\Б8303а}
+
+\newcommand{\lmd}{\lambda}
+
+\DeclareMathOperator{\false}{false}
+\DeclareMathOperator{\true}{true}
+\DeclareMathOperator{\pair}{pair}
+\DeclareMathOperator{\mnull}{null?}
+\DeclareMathOperator{\mcons}{cons}
+\DeclareMathOperator{\mhead}{head}
+\DeclareMathOperator{\mtail}{tail}
+\DeclareMathOperator{\mfirst}{first}
+\DeclareMathOperator{\msecond}{second}
+
+\begin{document}
+\maketitle
+
+\section*{№1}
+Восстановить скобки.
+\begin{enumerate}
+\item
+$$ xyz(yx) = (((xy)z)(yx))$$
+\item
+$$ (\lmd xyz.xz(yz))uvw = (\lmd x.(\lmd y.(\lmd z.(xz(yz)))))uvw = $$
+$$ = ((((\lmd x.(\lmd y.(\lmd z.((xz)(yz)))))u)v)w) $$
+\end{enumerate}
+
+\section*{№2}
+Выполнить подстановки
+\begin{enumerate}
+	\item 
+		$$ (\lmd y.x(\lmd w.vwx))[(uv)|x] \to (\lmd y.x(\lmd w.vwx)[(uv)|x]) \to (\lmd y.(uv)(\lmd w.vw(uv))) $$
+	\item 
+		$$(\lmd y.x(\lmd x.x))[(\lmd y.xy)|x] \to (\lmd y.x(\lmd z.z))[(\lmd y.xy)|x] \to $$
+		$$ \to \lmd y.(\lmd y.xy)(\lmd z.z)[(\lmd y.xy)|x] \to \lmd y.(\lmd y.xy)(\lmd z.z) $$
+	\item 
+		$$ (y(\lmd v.vx))[(\lmd y.vy)|x] \to y(\lmd z.zx)[(\lmd y.vy)|x] \to y(\lmd z.z(\lmd y.vy))$$
+	\item 
+		$$ (\lmd x.zy)[(uv)|x]\to(\lmd x.zy) $$
+\end{enumerate}
+
+\section*{№3}
+Привести к нормальной форме
+\begin{enumerate}
+	\item 
+		$$(\lmd x.xy)(\lmd u.vuu) \to_\beta ((\lmd u.vuu)y) \to_\beta vyy $$
+	\item 
+		$$ (\lmd xy.yx)uv \to ((\lmd x.(\lmd y.yx))u)v \to_\beta (\lmd y.yu)v \to_\beta  vu $$
+	\item 
+		$$ (\lmd x.x(x(yz))x)(\lmd u.uv) \to_\beta ((\lmd u.uv)((\lmd u.uv)(yz))(\lmd u.uv)) \to_\beta $$ 
+		$$ \to_\beta ((\lmd u.uv)(yz)v)(\lmd u.uv) \to_\beta ((yz)vv)(\lmd u.uv)$$
+	\item 
+		$$ (\lmd x.xxy)(\lmd y.yz) \to_\beta (\lmd y.yz)(\lmd y.yz)y \to_\beta (\lmd y.yz)zy \to_\beta zzy $$
+	\item 
+		$$ (\lmd xy.xyy)(\lmd u.uyx) \to_\alpha (\lmd xw.xww)(\lmd u.uyx) \to_\beta $$
+		$$ \to_\beta \lmd w.(\lmd u.uyz)ww \to_\beta \lmd w.wyzw $$
+	\item 
+		$$ (\lmd xyz.xz(yz))((\lmd xy.yx)u)((\lmd xy.yx)v)w \to_\beta $$
+		$$ \to_\beta (\lmd yz.((\lmd xy.yx)u)z(yz))((\lmd xy.yx)v)w \to_\beta $$
+		$$ \to_\beta  (\lmd z.((\lmd xy.yx)u)z((\lmd xy.yx)vz))w \to_\beta $$
+		$$ \to_\beta  ((\lmd xy.yx)u)w((\lmd xy.yx)vw) \to_\beta $$
+		$$ \to_\beta  (\lmd y.yu)w((\lmd xy.yx)vw) \to_\beta $$
+		$$ \to_\beta wu((\lmd xy.yx)vw) \to_\beta wu((\lmd xy.yv)w) \to_\beta wu(wv)$$
+\end{enumerate}
+
+\section*{№4}
+Доказать равенство $ (\lmd xyz.xzy)(\lmd xy.x) \equiv (\lmd xy.x)(\lmd x.x) $
+
+$$ (\lmd xy.x)(\lmd x.x )\to_\beta (\lmd y.(\lmd x.x)) \to (\lmd yx.x) $$
+$$ (\lmd xyz.xzy)(\lmd xy.x) \to_\beta (\lmd yz.(\lmd xy.x)zy) \to_\beta (\lmd yz.z) $$
+$$ (\lmd yx.x) \equiv (\lmd yz.z)$$
+
+\section*{№5}
+Рассмотрим $M \equiv (\lmd x.xxy)(\lmd x.xxy)$. 
+Выполним одно бета преобразование в $ M$.
+$$ (\lmd x.xxy)(\lmd x.xxy)y \equiv My $$
+Пусть выполнено $ k$ бета преобразовний. Тогда справедливо 
+$$ M \underbrace{\to_\beta \dots \to_\beta}_{k \text{ раз}} M\underbrace{y \dots y}_{k \text{ раз}} $$
+Выполним бета преобразовние.
+$$ (\lmd x.xxy)(\lmd x.xxy)y \dots y \to (\lmd x.xxy)(\lmd x.xxy)\underbrace{y \dots y}_{k \text{ раз}} \equiv   M\underbrace{y \dots y}_{k+1 \text{ раз}}$$
+Получаем бесконечную последовальность бета преобразований. Следовательно, M не имеет нормальной формы.
+\end{document}

@@ -1,0 +1,123 @@
+\documentclass[a4paper,14pt]{scrreprt}
+
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=3cm,bindingoffset=0cm]{geometry}
+\usepackage{polyglossia}
+\usepackage[nointegrals]{wasysym}
+\usepackage{fontspec}
+
+\setmainfont{Liberation Serif}
+\setsansfont{Liberation Sans}
+\setmonofont{Liberation Mono}
+\newfontfamily\cyrillicfont{Liberation Sans}
+\defaultfontfeatures{Scale=MatchLowercase, Mapping=tex-text}
+
+\setmainlanguage{russian}
+\setotherlanguage{english}
+\setkeys{russian}{babelshorthands=true}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+
+% Title Page
+\title{Домашняя работа № 3}
+\author{Потоцкая Анастасия\\Б8303а}
+
+\newcommand{\lmd}{\lambda}
+
+\DeclareMathOperator{\false}{false}
+\DeclareMathOperator{\true}{true}
+\DeclareMathOperator{\pair}{pair}
+\DeclareMathOperator{\mnull}{null?}
+\DeclareMathOperator{\mcons}{cons}
+\DeclareMathOperator{\mhead}{head}
+\DeclareMathOperator{\mtail}{tail}
+\DeclareMathOperator{\mfirst}{first}
+\DeclareMathOperator{\msecond}{second}
+
+
+\begin{document}
+\maketitle
+
+\section*{№10}
+Показать, что   
+$$ \mnull (\mcons M N)= \false $$
+$$\mhead  (\mcons M N)= M$$
+$$\mtail(\mcons M N)=N$$
+
+\begin{enumerate}
+\item 
+$$ \mnull (\mcons M N) \equiv (\lmd z.\mfirst z)((\lmd xy. \pair \false (\pair xy)) M N) \to $$
+$$ \to \mfirst (\pair \false (\pair M N))) \to \false $$
+\item 
+$$\mhead  (\mcons M N) \equiv (\lmd z. \mfirst(\msecond z)) (\pair \false (\pair MN)) \to  $$
+$$ \to \mfirst(\msecond (\pair \false (\pair MN)) ) \to \mfirst (\pair MN) \to M $$ 
+\item 
+$$ \mtail(\mcons M N) \equiv (\lmd x. \msecond (\msecond z)) (\pair \false (\pair MN)) \to $$
+$$ \to \msecond (\msecond (\pair \false (\pair MN))) \to \msecond (\pair MN) \to N $$
+\end{enumerate}
+
+\section*{№11}
+Описать натуральные числа использую списки. Ввести на них операцию сложения и умножения. \\
+Зададим натуральные числа ввиде.
+$$ \underline{0} = \text{nil} $$
+$$ \underline{1} = \text{cons} \; x \; \text{nil} $$
+$$ \underline{2} = \text{cons} \; x (\text{cons} \; x \;  \text{nil}) $$
+$$ \underline{n} = \underbrace{\text{cons} (\dots \text{cons} \; x \; \text{nil})}_{n}  $$ 
+Тогда операции сложения и умножения примут вид
+$$ \text{add} \equiv \text{append} $$
+$$ \text{mult} \equiv \lmd NZ. \text{if} \; (\text{null?} \; Z) \underline{0}\; (\text{append}\; N (\text{mult}\; N (\text{tail}\; Z))   ) $$ 
+
+\section*{№12}
+Показать, что функции prefn и pre удовлетворяют cпецификации. Рассмотрим функцию 
+$$\text{prefn} \equiv \lmd fp. \text{pair} \; (f(\text{first} \; p))(\text{first} \; p) $$
+Покажем, что 
+$$ \underline{n+1} \; (\text{prefn} \; f) (\text{pair} \; xx) = \text{pair} \; (f^{n+1}x) (f^{n}x) $$
+Доказательство
+$$ \underline{n+1} \; (\text{prefn} \; f) (\text{pair} \; xx) = 
+(\text{prefn} \; f)^{n+1} (\text{pair} \; xx) = 
+(\text{prefn} \; f)^{n} \; \text{prefn} \; f \; (\text{pair} \; xx) =$$
+$$ = (\text{prefn} \; f)^{n} \; \text{pair} (fx)x = 
+(\text{prefn} \; f)^{n-1} \text{prefn} \; f \; \text{pair} \; (fx)x = $$
+$$ = (\text{prefn} \; f)^{n-1} \; \text{pair} \; (f^2 x) fx =  \text{pair} \; (f^{n+1}x) (f^{n}x) $$
+Покажем теперь, что 
+$$ \text{pre} \; \underline{n+1} = \lmd fx. \; \text{second} \;(\underline{n+1} \; (\text{prefn} \; f)(\text{pair} \;xx)) = $$
+$$ = \lmd fx. \text{second} \; (\text{pair} \; (f^{n+1}x) (f^nx)) 
+=  \lmd fx.f^nx = \underline{n}$$ 
+$$ \text{pre} \; \underline{0} = \lmd fx. \text{second} \; (\underline{0} \; (\text{prefn} \; f)(\text{pair} \; xx)) =  
+\lmd fx.\text{second} \; (\text{pair} \; xx) = \lmd fx.x = \underline{0} $$ 
+
+\section*{№13}
+Показать
+$$ \text{sub} \; \underline{m} \; \underline{n} \rightarrow \underline{m - n}$$
+Доказательство
+$$ \text{sub} \; \underline{m} \; \underline{n} \rightarrow \underline{n} \; \text{pre} \; \underline{m} 
+ \rightarrow \text{pre}^{n} \; \underline{m} \rightarrow \text{pre}^{n-1} \text{pre} \; \underline{m}  $$
+$$ \rightarrow \text{pre}^{n-1} \; \underline{m-1} \rightarrow \underline{m - n}  $$
+
+\section*{№14}
+Показать, что для функции 
+$$ \text{ack}
+ \equiv \lmd m. m(\lmd fn. nf(f\underline{1})) \; \text{suc} $$
+выполненый свойства
+\begin{enumerate}
+\item $$ \text{ack} \; \underline{m + 1}\: \underline{0} = \text{ack} \; \underline{m}\: \underline{1} $$
+\item $$ \text{ack} \; \underline{m + 1}\: \underline{n + 1} = \text{ack} \; \underline{m} (\text{ack} \;  \underline{m + 1} \: \underline{n}) $$
+\end{enumerate}
+Рассмотрим выражение 
+$$ \text{ack} \; \underline{m + 1}\: \underline{n} = \underline{m + 1} (\lmd fn. nf(f\underline{1})) \; \text{suc} \; \underline{n} $$ 
+$$ \underline{m + 1} = \lmd fx.f^{m + 1}x = \lmd fx. ff^{m}x = \lmd fx.f(\underline{m} fx) $$
+$$ \text{ack} \; \underline{m + 1}\: \underline{n} = (\lmd fn. nf(f\underline{1}))\; (\underline{m} \; (\lmd fn. nf(f\underline{1})) \; \text{suc}) \underline{n} = $$
+$$ = (\lmd fn. nf(f\underline{1}))\; (\text{ack} \; \underline{m}) \; \underline{n} = 
+\underline{n} \; (\text{ack} \; \underline{m}) (\text{ack} \; \underline{m} \; \underline{1}) $$
+Рассмотрим первое свойствой
+$$ \text{ack} \; \underline{m+1} \; \underline{0} = \underline{0} \; (\text{ack} \; \underline{m}) (\text{ack} \; \underline{m} \; \underline{1}) = 
+ \text{ack} \; \underline{m} \; \underline{1} $$
+Рассмотрим второе свойство
+$$ \text{ack} \; \underline{m + 1}\: \underline{n + 1}  
+= \underline{n+1} (\text{ack} \; \underline{m}) (\text{ack} \; \underline{m} \; \underline{1}) = $$
+$$ = \text{ack} \; \underline{m} \; (\underline{n} \; (\text{ack} \; \underline{m}) (\text{ack} \; \underline{m} \; \underline{1}))
+=  \text{ack} \; \underline{m} (\text{ack} \;  \underline{m + 1} \: \underline{n}) $$ 
+
+\end{document}

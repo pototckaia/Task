@@ -1,0 +1,87 @@
+; 16 апреля
+
+дз 1. 
+accumuled - на вход подается список -> перезаписать cons заменить на op, а nill на init
+
+(defint (accumuled op init l)
+	((if (null? l))
+		init
+		(op(car l) (accumuled op init (cdr l)))))
+
+дз 2.
+Выразить через ассumule
+(defint (map f l)
+	(accumuled (lamdba (x y) <??>) init l))
+
+(-|)- (append l1 l2) (ассumule cons <??> <??>)
+(-|)- (lenth l) (accumuled const <??> <??> )
+
+дз 3. 
+(accumuled-n op init ll)
+список-список - берем первый элементы из каждого списка и концы каждого списка
+
+((1 2 3)(4 5 6) (7 8 9)) 
+
+дз 4.
+Матрица - список-списков
+(1 2 3)
+(9 5 6)
+(7 8 9)
+
+(dot-product l1 l2) (accumulate)
+(m-*-v m v) Матрица на вектор = (map)
+(transpose m) = (accumulate-n )
+(m-*-m) Матрица на матрицу
+	= (let ((nt (transpose n))))
+	  (map <??> m))
+
+дз 5.
+
+accumulate = fold-right ???
+
+(define (fold-right op init l)
+	(define (iter result rest)
+		(if (null? l))
+			result
+			(iter (op result (car rest) (cdr rest) ))))
+
+(defi (fold-left op init l)
+	(define (iter result rest)
+		(if (null? rest) (result)
+			(iter (op result (car rest)) (cdr rest))))
+
+Когда функции будут будут равный - какими свойствами должны обладать op и init
+
+дз 6.
+
+(define (append <> . <> l1))
+
+(append (list 1 2) (list 3 4 5) (list 6 7 8 9)) -> плоский список
+
+(define (append_ ll)
+	(if (null? ll)
+		null
+		(append (car ll) (append_ (cdr ll)))))
+
+Реализовать так, чтобы append не переписывал последний спосок
+
+________
+
+Дано n, 1 <= j < i <= n
+(i + j) - простое, добавить в выходной список
+enumerate [1, n],
+
+map (lamdba (i) 
+	(map (lamdba (j)
+		(list  i j)
+		(enumerate 1 (- i 1))))
+		(enumerate 2 n))
+
+i = 2 ((2 1))
+i = 3 ((3 1)(3 2))
+
+нужно сделать плоским (accumulate append nill)
+
+8 
+(define (flat-map f ll)
+	(accumulate append (map f ll)))

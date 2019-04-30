@@ -1,0 +1,110 @@
+\documentclass[a4paper,14pt]{scrreprt}
+
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=3cm,bindingoffset=0cm]{geometry}
+\usepackage{polyglossia}
+\usepackage[nointegrals]{wasysym}
+\usepackage{fontspec}
+
+\setmainfont{Liberation Serif}
+\setsansfont{Liberation Sans}
+\setmonofont{Liberation Mono}
+\newfontfamily\cyrillicfont{Liberation Sans}
+\defaultfontfeatures{Scale=MatchLowercase, Mapping=tex-text}
+
+\setmainlanguage{russian}
+\setotherlanguage{english}
+\setkeys{russian}{babelshorthands=true}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+
+% Title Page
+\title{Домашняя работа № 5}
+\author{Потоцкая Анастасия\\Б8303а}
+
+\newcommand{\lmd}{\lambda}
+\newcommand{\un}[1]{\underline{#1}}
+
+\usepackage{tikz}
+
+
+\DeclareMathOperator{\fact}{fact}
+\DeclareMathOperator{\false}{false}
+\DeclareMathOperator{\true}{true}
+\DeclareMathOperator{\pair}{pair}
+\DeclareMathOperator{\mif}{if}
+\DeclareMathOperator{\mnot}{not}
+\DeclareMathOperator{\miszero}{iszero?}
+\DeclareMathOperator{\mmult}{mult}
+\DeclareMathOperator{\mpre}{pre}
+
+
+\begin{document}
+\maketitle
+\section*{№18}
+Терм M разрешимый, если найдутся переменные $ x_1, \dots, x_m$ и  термы $N_1,\dots, N_n$ такие, что $(\lambda x_1, \dots,x_m. M) N_1,\dots, N_n = I$. 
+Определить, какие из термов разрешимые: 
+$$ Y, Y \mnot, K, YI, x\Omega, YK, n$$
+
+Доказательство.
+\begin{enumerate}
+	\item Представим $Y$ в форме $\lmd f.f((\lmd x.f(xx))(\lmd x.f(xx)))$. \\
+		  Пусть $ N_1 = (\lmd z.(\lmd x.x))$
+	$$(\lmd f.f((\lmd x.f(xx))(\lmd x.f(xx)))) (\lmd z.(\lmd x.x)) \to $$
+	$$ \to (\lmd z.(\lmd x.x)) ( (\lmd x.(\lmd z.(\lmd x.x))(xx)) (\lmd x.(\lmd z.(\lmd x.x))(xx)) )  \to $$
+	$$ \to \lmd x.x \equiv I $$	
+	Терм  $Y$ разрешимый.
+	
+	\item Так как $Y \mnot $ не имеет HNF, то для любых $x:\; \lmd x.Y \mnot \to Y \mnot$. \\
+	Откуда следует, что не сущетвует таких $x_1\dots x_m,\ N_1\dots N_n$,	что 
+	$$(\lmd x_1\dots x_m.(Y \mnot))N_1\dots N_n=I$$
+
+	\item Представим $K$ в форме $\lmd xy.x$. \\ 
+		Пусть $ N_1 = \lmd z.z, N_2 = b$.
+	$$ (\lmd xy.x)(\lmd z.z)b \to (\lmd y.(\lmd z.z))b \to \lmd z.z \equiv I$$
+	Терм  $K$ разрешимый.
+
+	\item Тоже, что и 2 пункте. Так как $YI$ не определен, то терм неразрешимый.
+	
+	\item Представим $x\Omega $ в форме $ \lmd x.(x \Omega) $. \\ 
+		Пусть $ N_1 = \lmd z.(\lmd y.y)$.
+	$$ (\lmd x.(x \Omega))(\lmd z.(\lmd y.y)) \to (\lmd z.(\lmd y.y))\Omega \to \lmd y.y \equiv I$$
+	Терм  $x\Omega $ разрешимый.
+	
+	\item Тоже, что и 2 пункте. Так как $YK$  не определен, то терм неразрешимый. 
+	
+	\item Представим $\un{n}$ в форме $ \lmd fx.f(f(\dots f(fx))) $. \\ 
+		Пусть $ N_1 = \lmd z.(\lmd y.y), N_2 = a$	Терм  $K$ разрешимый.
+	$$ (\lmd fx.f(f(\dots f(fx))))(\lmd z.(\lmd y.y))a \to $$
+	$$ \to (\lmd x.(\lmd z.(\lmd y.y))(\dots))a \to $$
+	$$ \to (\lmd x.\lmd y.y)a \to \lmd y.y \equiv I $$
+
+\end{enumerate}
+\section*{№19}
+Терм $M$ называется разрешимым, если $\exists x_1, \dots, x_m, \ N_1, \dots, N_n$, такие, 
+что $(\lmd x_1\dots x_m.M)N_1\dots N_n=I$. Доказать, что если $M$ терм определенный, то он разрешимый. \\
+
+Доказательство: \\
+
+Представим $M$ в HNF: $M = \lmd y_1\dots y_k. y  M_1\dots M_l$.
+Пусть 
+$$ x_1, \dots, x_m = y, z_1, \dots, z_q, $$
+где $z_1, \dots, z_m$ - свободные переменные в $M_1, \dots, M_l$. \\
+Тогда колличество $N_1, \dots, N_n$ равно $n = m + k = 1 + q + k$. \\
+Найдем представления для $N_1, \dots, N_n$, такие, чтобы выполнялось 
+$$(\lmd yz_1\dots z_q.(\lmd y_1 \dots y_k.yM_1\dots M_l))N_1\dots N_n\ = I$$
+Пусть $N_1$ имеет вид: $(\lmd u_1\dots u_l.(\lmd x.x))$. Тогда:
+
+$$ (\lmd yz_1\dots z_q.(\lmd y_1 \dots y_k.yM_1\dots M_l))((\lmd u_1\dots u_l.(\lmd x.x)))N_2\dots N_n \to $$ 
+$$ \to (\lmd z_1\dots z_q y_1 \dots y_k.(\lmd u_1\dots u_l.(\lmd x.x))M_1\dots M_k)N_2\dots N_n\to $$
+$$	\to(\lmd z_1\dots z_q y_1 \dots y_k.(\lmd x.x))N_2\dots N_n \to(\lmd x.x) $$
+Откуда следует, что $N_2\dots N_n$ могут иметь любой вид.
+
+\section*{№20}
+Проверить, имеет ли головную нормальную форму терм $RR$, где $R=\lambda x.\mnot (x x)$.
+$$ RR \to (\lmd x.\mnot (xx))(\lmd x.\mnot (xx)) \to \mnot((\lmd x.\mnot (xx))(\lmd x.\mnot (xx))) \equiv \mnot(RR) $$
+$RR$ - не имеет HNF. 
+
+\end{document}

@@ -1,0 +1,79 @@
+#lang racket
+
+; лекция 9 апреля
+
+; map
+(define (scala-list l k)
+	(if (null? l)
+		'()
+		(cons (* (car l) k) (scala-list (cdr l) k))))
+
+(scala-list '(1 2 3 4) 10)
+
+
+(define (custom-map l f)
+	(if (null? l)
+		'()
+		(cons (f (car l)) (custom-map (cdr l) f))))
+
+(custom-map '(1 2 3 4) (lambda (x) (+ 19 x)))
+
+(define l (cons (list 1 2) (list 3 4)))
+
+(display l)
+(display "\n")
+(display (length l))
+(display "\n")
+
+(define (deep-length t)
+	(cond 
+		[(null? t) 0]
+		[(not (pair? t)) 1]
+		[else (+ (deep-length (car t)) (deep-length (cdr t)))]))
+
+(display (deep-length l))
+(display "\n")
+
+(define (scala-tree t k)
+	(map 
+		(lambda (s) (if (pair? s) (scala-tree s k) (+ s k))) 
+		t))
+
+(display (scala-tree l 10))
+(display "\n")
+
+; сумма квадратов нечетных листей
+(define (f1 t)
+	(cond 
+		[(null? t) 0]
+		[(not (pair? t)) (if (odd? t) (* t t) 0)]
+		[else (+ (f1 (car t)) (f1 (cdr t)))]))
+
+(display (f1 l))
+(display "\n")
+
+(define (fibh n)
+  (if (< n 2)
+      n
+      (+ (fibh (- n 1)) (fibh (- n 2)))))
+
+; список fib(k)
+(define (f2 n)
+	(define (next k)
+		(if (> k n)
+			'()
+			(if (even? (fibh k))
+				(cons (fibh k) (next (+ k 1)))
+				(next (+ k 1))))
+			)
+	(next 1))
+
+(display (f2 12))
+
+; (define (fibo n)
+;   (cond
+;     ((= n 0) 0)
+;     ((= n 1) 1)
+;     (true (+ (fibo (- n 1)) (fibo (- n 2))))
+;     )
+;   )
