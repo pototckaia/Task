@@ -26,7 +26,7 @@ private:
     int cols;
     int frame_count;
 
-    const std::string fileName = "file1_400_400.json";
+    const std::string fileName = "file3_1000_563.json";
     long long beginkg = 0;
 
     bool isEnd = false;
