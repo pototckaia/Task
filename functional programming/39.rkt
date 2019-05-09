@@ -4,7 +4,6 @@
 ; конструкторы для возведения в степень к
 ; программе символьного дифференцирования. 
 
-
 ; символьное дифференцирование
 ; (ax^2 + bx + c) ->/x (2ax + b)
 
@@ -15,7 +14,34 @@
 ; dx/dx = 1
 ; dc/dx = 0 (not (eq? 'c 'x))
 
-; du^c/dt = c * u^(c - 1) * du/dt 
+; d(u^v)/dt = v * u^(v - 1) * du/dt + u^v * ln u(x) * dv/dx 
+
+
+(define (deriv e v)  ; de/dv
+  (cond 
+    [(number? e) 0]
+    [(var? e) (if (same-vars? e v) 1 0)]
+    [(sum? e) (make-sum 
+               (deriv (addend e) v) 
+               (deriv (augend e) v))]
+    [(product? e) (make-sum
+                   (make-product 
+                    (deriv (multiplier e) v)
+                    (multiplicant e))
+                   (make-product
+                    (deriv (multiplicant e) v)
+                    (multiplier e))
+                   )]
+    [(pow? e) 
+                (make-product
+                   (make-pow ; u^(v-1)
+                      (base e)
+                      (make-sum (exponent e) -1))
+                   (make-product
+                       (exponent e)
+                       (deriv (base e) v)))]
+    ))
+
 
 ; предикаты
 ; (var? e) - переменная
@@ -29,6 +55,7 @@
 ; (make-sum a1 a2)
 ; (make-product m1 m2)
 ; (make-pow b e)
+; (make-ln b)
 
 ; селекторы
 ; (addend s) - первое слагаемре
@@ -36,27 +63,7 @@
 ; (multiplier s) - первый сомножитель
 ; (multiplicant s) - второй сомножитель
 ; (base s) - основание степени
-; (exponent s) - степень 
-
-(define (deriv e v)  ; de/dv
-	(cond 
-		[(number? e) 0]
-		[(var? e) (if (same-vars? e v) 1 0)]
-		[(sum? e) (make-sum 
-							(deriv (addend e) v) 
-							(deriv (augend e) v))]
-		[(product? e) (make-sum
-								(make-product 
-												(deriv (multiplier e) v)
-												(multiplicant e))
-								(make-product
-												(deriv (multiplicant e) v)
-												(multiplier e))
-								)]
-		[(pow? e) (make-product)]
-		))
-
-
+; (exponent s) - степень
 
 (define (var? e) (symbol? e))
 (define (same-vars? e1 e2) 
@@ -82,7 +89,7 @@
 (define (make-product e1 e2) 
 	(list '* e1 e2))
 
-; (list ^ b e)
+; (list '^ b e)
 (define (pow? e)
 	(and (pair? e) (eq? (car e) '^)))
 (define (base e)
@@ -92,6 +99,9 @@
 (define (make-pow e1 e2)
 	(list '^ e1 e2))
 
+; (list ln b)
+(define (make-ln b)
+  (list 'ln b))
 
 ; (добавить возведение в степень)
 
@@ -100,10 +110,4 @@
 (deriv '(+ (* x y) x) 'x)
 
 ; (x^3 + 1)' = 3x^2 
-; (deriv '(+ (^ x 3) 1) 'x)
-
-; (define test (make-product 12 'x))
-
-; (display test)
-; (multiplier test)
-; (multiplicant test)	
+(deriv '(+ (^ x 3) 1) 'x)
