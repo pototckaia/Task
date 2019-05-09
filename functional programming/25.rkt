@@ -1,5 +1,6 @@
 #lang racket
-; (2.5): (a,b)-> 2^a3^b=(cons a b): разработать car,cdr
+; (2.5): (a,b)-> 2^a*3^b
+; =(cons a b): разработать car,cdr
 
 (define (my-cons a b)
   (* (expt 2 a) (expt 3 b))) 

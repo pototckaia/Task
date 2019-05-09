@@ -3,7 +3,7 @@
 
 ; n = 1 -> \x.f
 ; n = 2 -> \x.f((\x.f) x) -> \x.f(f(x))
-; n = 3 -> \x.f( (\x.f((\x.f)x)) x) -> \x.f( (\x.f(f(x))) x) -> \x. f(f(f(x)))
+; n = 3 -> \x.f( (\x.f((\x.f)x)) x) -> \x.f( (\x.f(f(x))) x) -> \x	. f(f(f(x)))
 ; ...
 (define (repeated f n)
   (cond
