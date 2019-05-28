@@ -53,3 +53,5 @@
 
 (occurences 'a '((a b)((a a) c b (((a))))))
 (occurences '(a b) '((a b)((a a) c b (((a))))))
+
+(symbol? #f)
