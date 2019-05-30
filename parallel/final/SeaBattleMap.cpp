@@ -74,7 +74,8 @@ Shoot SeaBattleMap::shoot(unsigned x, unsigned y) {
 
 void SeaBattleMap::modifyEnemyMap(Shoot s, unsigned x, unsigned y) {
   switch (s) {
-    case Shoot::Hit: {
+    case Shoot::Hit:
+    case Shoot::Win: {
       enemyMap[x * sizeX + y] = Cell::DeadShip;
       return;
     }

@@ -26,14 +26,14 @@ int main() {
   std::mt19937 mt(rd());
 
   s.prepare();
-  s.attack(std::make_pair(getRandom(mt), getRandom(mt)));
+
   while (!s.isFinish()) {
-    auto p = s.fire();
-    s.result_fire(getRandomShoot(mt));
+    s.attack(std::make_pair(getRandom(mt), getRandom(mt)));
 
     if (s.isFinish()) break;
 
-    s.attack(std::make_pair(getRandom(mt), getRandom(mt)));
+    s.fire();
+    s.result_fire(getRandomShoot(mt));
   }
 
 

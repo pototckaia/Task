@@ -11,6 +11,9 @@ add_executable(server server.cpp SeaBattleMap.cpp SeaBattleMap.h RenderMap.cpp R
 
 add_executable(client client.cpp SeaBattleMap.cpp SeaBattleMap.h RenderMap.cpp RenderMap.h StateSeaBattle.cpp StateSeaBattle.h MPIConfig.h)
 
+add_executable(main main.cpp SeaBattleMap.cpp SeaBattleMap.h RenderMap.cpp RenderMap.h StateSeaBattle.cpp StateSeaBattle.h MPIConfig.h)
+
+
 target_link_libraries(server ${MPI_LIBRARIES})
 target_link_libraries(client ${MPI_LIBRARIES})
 

@@ -71,9 +71,11 @@ point StateSeBattle::fire() {
 }
 
 void StateSeBattle::result_fire(Shoot s) {
+
   map.modifyEnemyMap(s, last_fire.first, last_fire.second);
   std::cout << renderMap.toString(map) << std::endl;
   std::cout << std::endl;
+
   switch (s) {
     case Shoot::Hit: {
       std::cout << "Player sank the ship in x : "
