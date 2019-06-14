@@ -13,6 +13,22 @@
 ; Объясните, что за задачу выполняет mystery
 (define v (mlist 'a 'b 'c))
 (define w (mystery v))
-; обратный порядок
 (display w)
 
+; 1. 
+; x = ('a 'b 'c)
+; y = ()
+; cdrx := 'b 'c
+; x := 'a
+
+; 2. 
+; x = 'b 'c
+; y = 'a 
+; cdrx := 'c
+; x := 'b 'a
+
+; 3. 
+; x = 'c 
+; y = 'b 'a
+; cdrx := ()
+; x := 'c 'b 'a
