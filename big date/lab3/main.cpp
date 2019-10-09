@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <algorithm>
 #include "GraphParser.h"
 
 using Graph = std::vector<nodeGraph>;
@@ -24,7 +25,9 @@ int main() {
 
 	while (!p.isEnd()) {
 		graph.push_back(p.getLine());
-		toIndex.emplace(graph.back().id, graph.size() - 1);
+		auto idParent = graph.back().id;
+		auto& parentFriends = graph.back().friends;
+		toIndex.emplace(idParent, graph.size() - 1);
 	}
 
 	long long count_comp = 0;
