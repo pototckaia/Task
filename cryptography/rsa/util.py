@@ -63,6 +63,3 @@ def trial_division(n: int) -> List[int]:
     if n != 1:
         factors.append(n)
     return factors
-
-prime = trial_division(78)
-print(prime)

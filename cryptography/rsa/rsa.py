@@ -3,12 +3,12 @@ import util
 
 
 class Rsa:
-    def __init__(self):
-        self.__maxBorder = 2 ** 1024
-        self.__minBorder = 2 ** 512
+    def __init__(self, max_len = 512):
+        self.max_length = max(512, max_len)
+        self.__maxBorder = 2 ** self.max_length
+        self.__minBorder = 2 ** 256
         p = util.randprime(self.__minBorder, self.__maxBorder)
         q = util.randprime(self.__minBorder, self.__maxBorder)
-        self.max_length = 0
         # module
         self.n = p * q
         # Euler's function of n
@@ -38,11 +38,9 @@ class Rsa:
     # string: string to encode
     def encode_string(self, string: str) -> Tuple[int, str]:
         result = []
-        self.max_length = 0
 
         for char in string:
             result.append(str(self.__encode_char(ord(char))))
-            self.max_length = max(self.max_length, len(result[-1]))
 
         for i, code in enumerate(result):
             if self.max_length > len(code):
