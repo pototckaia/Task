@@ -8,6 +8,7 @@ build-*/
 .idea*/
 venv/
 pototckaia.ae@cluster.dvfu.ry/
+__pycache__/
 
 # applied recursively
 
