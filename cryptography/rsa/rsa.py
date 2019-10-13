@@ -1,14 +1,13 @@
 from typing import Tuple
 import util
 
-
 class Rsa:
-    def __init__(self, max_len = 512):
+    def __init__(self, randprime, max_len = 512):
         self.max_length = max(512, max_len)
         self.__maxBorder = 2 ** self.max_length
         self.__minBorder = 2 ** 256
-        p = util.randprime(self.__minBorder, self.__maxBorder)
-        q = util.randprime(self.__minBorder, self.__maxBorder)
+        p = randprime(self.__minBorder, self.__maxBorder)
+        q = randprime(self.__minBorder, self.__maxBorder)
         # module
         self.n = p * q
         # Euler's function of n

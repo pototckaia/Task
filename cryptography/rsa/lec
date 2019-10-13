@@ -1,0 +1,149 @@
+---Расширенный алгормт Евклида---
+```
+# a mod b = a - b * floor(a / b)
+# lcm(a, b) = (a * b) / gcd(a, b), least common multiplier
+# a * x + b *y = gcd(a, b)
+def advanced_gcd(a: int, b: int) -> Tuple[int, int, int]:
+    xx, yy = 0, 1
+    x, y = 1, 0
+    while b:
+        q = a // b
+        a, b = b, a % b
+        x, xx = xx, x - xx*q
+        y, yy = yy, y - yy*q 
+    return a, x, y
+
+```
+
+---Быстрое возведение в степень по модулю---
+```
+# a^n = a^(n/2) * a^(n/2) or a^(n-1) * a
+def modular_pow(a: int, b: int, n: int) -> int:
+    res = 1
+    while b:
+        if (b & 1): # is odd
+            res = (res * a) % n
+        a = (a * a) % n
+        b >>= 1
+    return res
+```
+
+---Тест Ферма---
+Если n - простое и a любое число 1 <= a <= n - 1, тогда a**(n-1) = 1 (mod n)
+Свидетель ферма для n - существует a : a**(n-1) != 1 (mod n)
+
+```
+def fermat_test(n: int, t: int) -> bool:
+    for i in range(1, t + 1):
+        a = rn.randint(2, n - 2) # [2, n - 2]
+        r = modular_pow(a, n - 1, n)
+        if r != 1: 
+            return False
+    return True
+```
+Число Кармайкла - составное число n, которое удовлетворяет сравнению b^(n-1) =  1 (mod n) для всех целых b, взаимно простых с n.
+Если n - число Кармайкла, то единственными свидетелями Ферма для n являются те целые числа a, 1 ≤ a ≤ n - 1, для которых gcd (a, n)> 1. Таким образом, если все простые множители n являются большими, тогда с большой вероятностью тест Ферма объявляет, что n является «простым», даже если число итераций t велико. Этот недостаток в тесте Ферма устраняется в вероятностных тестах первичности Соловея-Штрассена и Миллера-Рабина, опираясь на критерии, которые сильнее теоремы Ферма.
+
+---Тест Соловея — Штрассена---
+Число a называется квадратичным вычитом по модулю n, если найдется x : x^2 = a (mod n), иначе оно наывазется квадратичным невычeтом.
+Символ Лежандра
+b - простое число != 2
+(a, b) =  0, если a | p
+(a, b) = 1, если a является квадратным вычетом по молулю p и a не делится на p
+(a, b) = -1, если a является квадратным невычетом по модулю p
+Свойства
+1- Формула Эйлера
+(a, b) = a ^((b - 1)/2) (mod p)
+2- Мультипликативность
+(ab, p) = (a, p)(b, p)
+3- a = b (mod p) => (a, p) = (b, p)
+4- Квадратичный закон взаимности
+p, q - неравные простые числа => (q, p) = (-1)**(((p-1)/2)*((q-1)/2))*(p, q)
+p = q (mod 4a) => (a, p) = (a, q)
+
+Критерий Эйлера
+Пусть n - простое число. a**(0.5*(n-1)) = (a, n) (mod n) для все a: gcd(a, n) = 1
+
+```
+def solovay_strassen(n: int, t: int) -> bool:
+	for i in range(1, t + 1):
+		a = rn.randint(2, n - 2)
+		r = modular_pow(a, 0.5*(n-1), n)
+		if r != 1 and r != n - 1:
+			return False
+		s = Jacobi(a, b)
+		if r != s % n:
+			return False
+	return True
+```
+Граница вероятности ошибки Соловея-Штрассена: 
+Пусть n - нечетное составное целое число. 
+Вероятность того, что SOLOVAY-solovay_strassen(n, t) объявит n «простым», меньше, чем 2^(-t)
+
+---Тест Миллера — Рабина---
+Пусть n - простое число, n - 1 = 2^s * r, где r - нечетный и a такое, что gcd(a, n) = 1.
+Тогда a^r == 1 (mod n) или a^(2^j * r) == -1 (mod n) для некоторого j \in [0, s-1]
+
+Если n нечетное составное целое число, то не более 1/4 от всех чисел a \in [1, n-1], являются сильными лжецами для n. Фактически, если n != 9, число сильных лжецов для n не больше φ(n)/4, где φ - функция Эйлера.
+
+```
+def miller_rabin_test(n: int, t: int) -> bool:
+    s, r = 0, n - 1 # n - 1 = 2^s * r
+    while not (r & 1): # not odd
+        s += 1
+        r >>= 1
+    for i in range(1, t + 1):
+        a = rn.randint(2, n - 2)
+        y = modular_pow(a, r, n)
+        if y == 1 or y == n - 1:
+            continue
+        for j in range(1, s):
+            y = modular_pow(y, 2, n)
+            if y == 1:
+                return False
+            if y == n - 1:
+                continue
+        return False
+    return True
+```
+Граница вероятности ошибки
+Для любого нечетного составного целого числа n вероятность того, что 
+miller_rabin_test(n, t) объявит n «простым», меньше 4^-t
+
+---Критерий Поклингтона---
+Пусть n — натуральное число. Пусть число n-1 имеет простой делитель q, причем q > sqrt(n)-1. Если найдётся такое целое число a, что выполняются следующие два условия:
+1 - a^(n-1) = 1 (mod n) 
+2 - gcd(n, a^((n-1)/q)-1) = 1
+то n — простое число.
+
+Обобщение
+Пусть N - 1 = A * B, A > sqrt(N), gcd(A, B) == 1
+if for each prime factor p of A there exists a_p so that 
+1. a_p ^ (N - 1) mod N == 1
+2. gcd(a_p ^ ((N - 1)/p), N) == 1
+then N is prime
+
+
+---Random search---
+По теореме о простых числах (Факт 2.95) доля (положительных) целых чисел ≤ x, которые являются простыми, составляет приблизительно 1 / ln x. Поскольку половина всех целых чисел ≤ x четна, доля нечетных целых чисел ≤ x, которые являются простыми, составляет приблизительно 2 / ln x. 
+
+Это говорит о том, что разумной стратегией для выбора случайного k-битного (вероятного) простого числа является многократный выбор случайных k-битных нечетных целых чисел n, пока не будет найдено одно, которое объявлено как «простое» для соответствующего значения параметра безопасности t.
+
+1 - Generate a random  odd number, say p
+2 - Test to see if p is prime; if it is, return p; 
+3 - Otherwise set goto 2
+
+The standard way to generate big prime numbers is to take a preselected  random number of the desired length, apply a Fermat test (best with the base 2 as it can be optimized for speed) and then to apply
+a certain number of Miller-Rabin tests (depending on the length and the 
+allowed error rate like 2−100) to get a number which is very probably a prime number.
+
+---incremental search--- 
+1 - Generate a random k-bit odd number, say p
+2 - test the s nubmers p, p + 2, p + 4, ..., p + 2(s-1) 
+3 - Otherwise set p=p+2, goto 2
+
+If all these s candidates are found to be composite, the algorithm is said to have failed. 
+Under reasonable number-theoretic assumptions, the probability of the algorithm failing has been shown to be less than 2e^(−2c) for large k.
+If s = c·ln(2^k) where c - constant, the probability that this incremental search variant of
+returns a composite number has been shown to be less than δk^(3)2^(−√k) for some constant δ.
+Тагже метод может быть оптимизирован для пробного деления.
