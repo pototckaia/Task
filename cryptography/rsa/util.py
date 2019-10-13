@@ -30,6 +30,9 @@ def advanced_gcd(a: int, b: int) -> Tuple[int, int, int]:
     return a, x, y
 
 
+def lcp(a: int, b: int) -> int:
+    return abs(a * b) // advanced_gcd(a, b)[0]
+
 r"""
 Returns the Jacobi symbol `(m / n)`.
 
