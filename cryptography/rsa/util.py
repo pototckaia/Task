@@ -126,7 +126,7 @@ def solovay_strassen(n: int, t: int) -> bool:
         r = modular_pow(a, (n-1) // 2, n)
         if r != 1 and r != n - 1:
             return False
-        s = Jacobi(a, b)
+        s = Jacobi(a, n)
         if r != s % n:
             return False
     return True

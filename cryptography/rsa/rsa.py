@@ -56,7 +56,7 @@ class Rsa:
             if self.max_length > len(code):
                 result[i] = ("0" * (self.max_length - len(code))) + code
 
-        return self.max_length, ''.join(result)
+        return ''.join(result)
 
     # code: encrypted character code to decode
     # code ^ private_key mod n
@@ -72,4 +72,4 @@ class Rsa:
                 return -1, ""
             result += chr(self.__decode_char(int(code)))
 
-        return self.max_length, result
+        return result
