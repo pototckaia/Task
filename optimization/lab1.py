@@ -2,6 +2,8 @@ import numpy as np
 from numpy import linalg as la
 from scipy.optimize import minimize
 from sklearn.datasets import make_spd_matrix
+import argparse
+import time
 
 def isPD(B):
     try:
@@ -94,25 +96,6 @@ def newtonMethod(f, df, d2f, x0, precision, max_iter=1000):
 	res['iteration'] = len(dot)
 	return res
 
-n = 6
-A = make_spd_matrix(n)
-A = np.array([[ 3.54575775,  1.40632856,  2.36437092, -1.01604035, -0.42511447, -0.25484018],
- [ 1.40632856,  0.71820751,  1.1093031,  -0.35012359, -0.24096428, -0.10150292],
- [ 2.36437092,  1.1093031,   2.24586614, -0.84271466, -0.22288024, -0.17881253],
- [-1.01604035, -0.35012359, -0.84271466,  0.82865489,  0.15732203,  0.18745785],
- [-0.42511447, -0.24096428, -0.22288024,  0.15732203,  0.39335921,  0.24514533],
- [-0.25484018, -0.10150292, -0.17881253,  0.18745785,  0.24514533,  0.44956944]])
-print('is positive-definite matrix:', isPD(A))
-print(A)
-b = np.matrix('1; 2; 3; 4; 5; 6')
-print(b)
-if A.shape[0] != A.shape[1]:
-	print('Матрица A должна быть квадратной')
-	exit(0)
-if b.shape[0] != n or b.shape[1] != 1:
-	print('Вектор-столбец b не правильно задан')
-	exit(0)
-
 # 1/2 * (x^T * A * x) + b^T * x
 def f(x):
 	x = rowToCol(x)
@@ -131,29 +114,66 @@ def df(x):
 def d2f(x):
 	return 0.5 * (A + A.transpose())
 
+if __name__ == '__main__':
 
-x0 = np.zeros(n)
-print('xo', x0)
+	argsParser = argparse.ArgumentParser()
+	argsParser.add_argument('-n', '--n', type=int,
+							default=5, help='dim')
+	argsParser.add_argument('-a', '--alpha', type=float,
+							default=-1, help='Size key')
+	args = argsParser.parse_args()
 
-res = minimize(f, x0=x0, method='Newton-CG', 
-				jac=lambda x: np.ravel(df(x)), hess=d2f,
-				options={'xtol': 1e-5})
-print('Результат scipy.optimize.minimize')
-print('\t message: {}'.format(res['message']))
-print('\t success: {}'.format(res['success']))
-print('\t fun: {}'.format(res['fun']))
-print('\t x: {}'.format(res['x']))
-print('\t jac: {}'.format(res['jac']))
-print()
+	alpha = None if args.alpha == -1 else args.alpha
+	print(alpha)
+	n = args.n
+	print(n)
+	A = make_spd_matrix(n)
+	# A = np.array([[ 3.54575775,  1.40632856,  2.36437092, -1.01604035, -0.42511447, -0.25484018],
+	#  [ 1.40632856,  0.71820751,  1.1093031,  -0.35012359, -0.24096428, -0.10150292],
+	#  [ 2.36437092,  1.1093031,   2.24586614, -0.84271466, -0.22288024, -0.17881253],
+	#  [-1.01604035, -0.35012359, -0.84271466,  0.82865489,  0.15732203,  0.18745785],
+	#  [-0.42511447, -0.24096428, -0.22288024,  0.15732203,  0.39335921,  0.24514533],
+	#  [-0.25484018, -0.10150292, -0.17881253,  0.18745785,  0.24514533,  0.44956944]])
+	print('is positive-definite matrix:', isPD(A))
+	print(A)
+	b = np.matrix([i for i in range(1, n + 1)]).transpose()
+	print(b)
+	if A.shape[0] != A.shape[1]:
+		print('Матрица A должна быть квадратной')
+		exit(0)
+	if b.shape[0] != n or b.shape[1] != 1:
+		print('Вектор-столбец b не правильно задан')
+		exit(0)
 
-ans = gradientDescent(f, df, x0, 1e-6) # 0.3
-print('Результат gradientDescent')
-for key in ans:
-	print('\t {}: {}'.format(key, ans[key]))
-print()
+	x0 = np.zeros(n)
+	print('xo', x0)
 
-ans = newtonMethod(f, df, d2f, x0, 1e-6)
-print("Результат newtonMethod")
-for key in ans:
-	print('\t {}: {}'.format(key, ans[key]))
-print()
+	res = minimize(f, x0=x0, method='Newton-CG', 
+					jac=lambda x: np.ravel(df(x)), hess=d2f,
+					options={'xtol': 1e-5})
+	print('Результат scipy.optimize.minimize')
+	print('\t x: {}'.format(res['x']))
+	print('\t fun: {}'.format(res['fun']))
+	print('\t jac: {}'.format(res['jac']))
+	print('\t message: {}'.format(res['message']))
+	print('\t success: {}'.format(res['success']))
+	print()
+
+	start_time = time.time()
+	ans = gradientDescent(f, df, x0, 1e-6, alpha)
+	end_time = time.time()
+	print('Результат gradientDescent')
+	for key in ans:
+		print('\t {}: {}'.format(key, ans[key]))
+	print('time: {}'.format(end_time - start_time))
+	print()
+
+	
+	start_time = time.time()
+	ans = newtonMethod(f, df, d2f, x0, 1e-6)
+	end_time = time.time()
+	print("Результат newtonMethod")
+	for key in ans:
+		print('\t {}: {}'.format(key, ans[key]))
+	print('time: {}'.format(end_time - start_time))
+	print()
