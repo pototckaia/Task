@@ -105,8 +105,11 @@ def trial_division(n: int) -> List[int]:
 
 def is_prime_td(n: int) -> bool:
     sqrtn = int(sqrt(n))
-    for i in range(2, sqrtn + 1):
-        if not (n % i):
+    if n % 2 == 0:
+        return False
+
+    for i in range(3, sqrtn + 1, 2):
+        if n % i == 0:
             return False
     return True
 
