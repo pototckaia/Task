@@ -4,15 +4,17 @@ import random as rn
 
 class Rsa:
     def __init__(self, randprime, max_len = 512):
-        self.max_length = max(512, max_len)
+        self.max_length = max(16, max_len)
         self.__maxBorder = 2 ** (self.max_length / 2)
-        self.__minBorder = 2 ** 64
+        self.__minBorder = 2 ** 16
         self.__randprime = randprime
         # the integers p and q should be chosen at random, 
         # and should be similar in magnitude but differ in 
         # length by a few digits to make factoring harder.
         p = randprime(self.__minBorder, self.__maxBorder)
+        print('find p')
         q = randprime(self.__minBorder, self.__maxBorder)
+        print('find q')
         # module - key length
         self.n = p * q
         # Carmichael's totient function
@@ -21,14 +23,16 @@ class Rsa:
         u = (p - 1) * (q - 1)
         # opened key
         self.e = self.__calculate_open_key(u)
+        print('find open key')
         # closed key
         self.d = self.__calculate_private_key(self.e, u)
+        print('find private key')
 
     # u: euler function of module
     def __calculate_open_key(self, u: int) -> int:
         # gcd(u, e) = 1 and e simple number, example Fermat number
         # having a short bit-length and small Hamming weight 
-        for _ in range(1, 10000):
+        for _ in range(1, 30):
             e = self.__randprime(2, u - 1)
             if util.advanced_gcd(u, e)[0] == 1:
                 return e
@@ -60,7 +64,7 @@ class Rsa:
 
     # code: encrypted character code to decode
     # code ^ private_key mod n
-    def __decode_char(self, code: int) -> int:
+    def __decode_char(self, code):
         return pow(code, self.d, self.n)
 
     # string: string of encrypted characters to decode

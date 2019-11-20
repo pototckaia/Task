@@ -12,6 +12,7 @@ def oddRand(min: int, max: int) -> int:
 def rand_search(min: int, max: int, maxInter: int, check) -> int:
 	r = oddRand(min, max) # odd
 	for i in range(1, maxInter):
+		print('check {}'.format(r))
 		if check(r):
 			break
 		r = oddRand(min, max)
@@ -20,13 +21,14 @@ def rand_search(min: int, max: int, maxInter: int, check) -> int:
 def incremental_search(min: int, max: int, maxInter: int, check) -> int:
 	r = oddRand(min, max) # odd
 	for i in range(1, maxInter):
+		print('check {}'.format(r))
 		if check(r):
 			break
 		r += 2
 	return r
 
 def td_randprime(min: int, max: int):
-	return incremental_search(min, max, 1000, util.is_prime_td)
+	return incremental_search(min, max, 100, util.is_prime_td)
 
 def ss_randprime(min: int, max: int) -> int:
 	return rand_search(min, max, 1000, 
