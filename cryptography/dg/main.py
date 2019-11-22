@@ -62,19 +62,71 @@
 
 import hashlib
 import argparse
-import random
+from random import randint
+from sympy import randprime
+from primitive import get_prime_and_generator, randcoprime, reverse_by_mod
 
 if __name__ == '__main__':
 
 	argsParser = argparse.ArgumentParser()
 	argsParser.add_argument('-f', '--filename', type=argparse.FileType('r'),
 							required=True, help='Encoded file')
+	argsParser.add_argument('-g', '--create',
+							action='store_true', help='Create key and generate dg')
+	argsParser.add_argument('-c', '--check', 
+							action='store_true', help='Check dg')
+
 	args = argsParser.parse_args()
 	chunk_size = 4096
-	file_hash = hashlib.sha256()
+	file_name = args.filename.name
 
-	with open(args.filename.name, 'r') as f_in:
+	file_hash = hashlib.sha256()
+	print('read file')
+	with open(file_name, 'r') as f_in:
 		for chunk in iter(lambda: f_in.read(chunk_size), ''):
 			file_hash.update(chunk.encode('utf-8'))
 
-	print (file_hash.hexdigest())
+	m = int(file_hash.hexdigest(), 16)
+	print('hash {}'.format(m))
+
+	if args.create:
+		# - Генерируется случайное простое число p.
+		# - Выбирается целое число g — первообразный корень p.
+		# - Выбирается случайное целое число x такое, что 1 < x < p − 1.
+		# - Вычисляется y=g^x mod p.
+		# - Открытым ключом является y, закрытым ключом — число x.
+		# (p, g, y)
+		p, g = get_prime_and_generator(256)
+		x = randint(2, p - 2)
+		y = pow(g, x, p)
+
+		# Для подписи сообщения M
+		# - m = h (M)
+		# - Выбирается случайное число 1 < k < p − 1 взаимно простое с p − 1 
+		# 	и вычисляется r = g ^k mod p
+		# - Вычисляется число s ≡ (m − x*r)k^(− 1) ( mod p − 1 ) 
+		# 	где k^(-1) - мультипликативное обратное.
+		# - Подписью сообщения M  является пара (r, s)
+		k = randcoprime(p - 1)
+		r = pow(g, k, p)
+		s = ((m - x*r) * reverse_by_mod(k, p - 1)) % (p - 1)
+		print('dg ', r, s)
+
+		with open('{}_pub'.format(file_name), 'w') as fin:
+			fin.write('{}\n {}\n {} \n'.format(g, p, y))
+			fin.write('{} \n {}'.format(r, s))
+	elif args.check:
+			
+		g, p, y, r, s = 0, 0, 0, 0, 0
+		with open('{}_pub'.format(file_name), 'r') as fin:
+			lines_list = fin.readlines	()
+			vals = [int(val) for line in lines_list for val in line.split()]
+			g, p, y, r, s = vals[0], vals[1], vals[2], vals[3], vals[4]
+		# Открытый ключ (p, g, y), подпись (r, s) сообщения M
+		# - проверяется выполнимость 0 < r < p, 0 < s < p - 1
+		# - если хоты бы одно из них не выполняется, то подпись не верная
+		# - m = h(M)
+		# - верна если y^r r^s = g^m (mod p)
+		isOwner = 0 < r < p and 0 < s < p - 1 and \
+				(pow(y, r, p) * pow(r, s, p)) % p == pow(g, m, p)
+		print(isOwner)
