@@ -20,7 +20,7 @@ int main (int argc, char *argv[])
 
 	// выделение памяти на хосте
 	float *a = new float[n];
-	for (sts::size_t i = 0; i < n; ++i)
+	for (std::size_t i = 0; i < n; ++i)
 		a[i] = 0.0f;
 
 	// выделение памяти на девайсе

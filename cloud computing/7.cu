@@ -41,8 +41,8 @@ int main()
 
 	cudaMemcpy(result, result_gpu, n*sizeof(float), cudaMemcpyDeviceToHost);
 
-	for (size_t x = 0; x < 10; ++x)	
-		cout << result[x] << endl;
+	for (size_t i = 0; i < 10; ++i)	
+		cout << a[i] << "+" << b[i] << "=" << result[i] << endl;
 
 
 	delete[] a, delete[] b, delete[] result;

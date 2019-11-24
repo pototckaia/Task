@@ -1,5 +1,15 @@
 // Сложение двух чисел с использованием N-блоков и N-тредов
 
+
+#include <iostream>
+
+void random_ints(int *a, int n)
+{
+   int i;
+   for (i = 0; i < n; ++i)
+       a[i] = rand() %5000;
+}
+
 __global__ void add(int *a, int *b, int *c) 
 {
 	int index = threadIdx.x + blockIdx.x * blockDim.x;
@@ -38,6 +48,11 @@ int main(void)
 	
 	// копируем результат работы device на host ( копия c )
 	cudaMemcpy(c, dev_c, size, cudaMemcpyDeviceToHost);
+
+	
+	for (std::size_t i = 0; i < 10; ++i) {
+		std::cout << a[i] << "+" << b[i] << "=" << c[i] << std::endl; 
+	}
 
 	free(a); free(b); free(c);
 	cudaFree(dev_a); cudaFree(dev_b); cudaFree(dev_c);

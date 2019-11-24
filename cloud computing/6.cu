@@ -1,5 +1,15 @@
 // Скалярное произведение с использованием shared-памяти 
 
+#include <iostream>
+
+void random_ints(int *a, int n)
+{
+   int i;
+   for (i = 0; i < n; ++i)
+       a[i] = rand() %5000;
+}
+
+
 #define N 512
 
 __global__ void dot(int *a, int *b, int *c) 
@@ -42,6 +52,15 @@ int main(void)
 
 	//копируем результат работы device на host копией c
 	cudaMemcpy( c, dev_c, sizeof( int ) , cudaMemcpyDeviceToHost );
+
+	std::cout << 	*c << std::endl;
+
+	int check = 0;
+	for (std::size_t i = 0; i < N; ++i) {
+		 check += a[i] * b[i];
+	}
+
+	std::cout << "check " << check << std::endl;
 
 	free( a ); free( b ); free( c );
 	cudaFree( dev_a ); cudaFree( dev_b ); cudaFree( dev_c );
