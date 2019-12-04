@@ -50,7 +50,7 @@ r'''
 	- exact line search
 		t = argmin(f(x - s * df(x)))
 '''
-def gradientDescent(f, df, x0, precision, lr = None, max_iter=100):
+def gradientDescent(f, df, x0, precision, lr = None, max_iter=500):
 	cur_x = x0
 	learning_rate = 1
 	dot = [x0]
@@ -60,8 +60,9 @@ def gradientDescent(f, df, x0, precision, lr = None, max_iter=100):
 			learning_rate = lr
 		else:
 			learning_rate = backtrackingLineSerarch(f, df, cur_x, df(cur_x), 0.001, 0.5, 0.1)
-		next_x = cur_x - learning_rate * df(cur_x)
-		if (la.norm(df(next_x), 2) <= precision): # || df(x^(k+1)) || = 0
+		cos_ = df(cur_x) 
+		next_x = cur_x - learning_rate * cos_ 
+		if (la.norm(cur_x - next_x, 2) <= precision):
 			cur_x = next_x
 			res['success'] = True
 			break
@@ -118,25 +119,27 @@ if __name__ == '__main__':
 
 	argsParser = argparse.ArgumentParser()
 	argsParser.add_argument('-n', '--n', type=int,
-							default=5, help='dim')
+							default=6, help='dim')
 	argsParser.add_argument('-a', '--alpha', type=float,
 							default=-1, help='Size key')
 	args = argsParser.parse_args()
 
-	alpha = None if args.alpha == -1 else args.alpha
-	print(alpha)
 	n = args.n
 	print(n)
+
+	alpha = 1/(n * 10) 		 #None if args.alpha == -1 else args.alpha
+	print(alpha)
 	A = make_spd_matrix(n)
-	# A = np.array([[ 3.54575775,  1.40632856,  2.36437092, -1.01604035, -0.42511447, -0.25484018],
-	#  [ 1.40632856,  0.71820751,  1.1093031,  -0.35012359, -0.24096428, -0.10150292],
-	#  [ 2.36437092,  1.1093031,   2.24586614, -0.84271466, -0.22288024, -0.17881253],
-	#  [-1.01604035, -0.35012359, -0.84271466,  0.82865489,  0.15732203,  0.18745785],
-	#  [-0.42511447, -0.24096428, -0.22288024,  0.15732203,  0.39335921,  0.24514533],
-	#  [-0.25484018, -0.10150292, -0.17881253,  0.18745785,  0.24514533,  0.44956944]])
+	A = np.array( [[   8.6303,    1.6692,    1.6716,    1.8487,    2.1649,    1.7010],
+    [1.6692,    7.5939,    1.2113,    1.3713,    1.5321,    1.0893],
+    [1.6716,    1.2113,    8.1740,    1.3232,    1.5848,    1.1371],
+    [1.8487,    1.3713,    1.3232,    7.4952,    1.7708,    1.3272],
+    [2.1649,    1.5321,    1.5848,    1.7708,    8.5094,    1.6433],
+    [1.7010,    1.0893,    1.1371,    1.3272,    1.6433,    7.5422]])
 	print('is positive-definite matrix:', isPD(A))
 	print(A)
-	b = np.matrix([i for i in range(1, n + 1)]).transpose()
+	b =  np.random.rand(1, n).transpose()
+	b = np.matrix([0.6160,   0.4733,    0.3517,    0.8308,    0.5853,    0.5497]).transpose()
 	print(b)
 	if A.shape[0] != A.shape[1]:
 		print('Матрица A должна быть квадратной')
@@ -160,7 +163,7 @@ if __name__ == '__main__':
 	print()
 
 	start_time = time.time()
-	ans = gradientDescent(f, df, x0, 1e-6, alpha)
+	ans = gradientDescent(f, df, x0, 1e-5, alpha)
 	end_time = time.time()
 	print('Результат gradientDescent')
 	for key in ans:
