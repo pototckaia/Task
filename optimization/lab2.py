@@ -65,8 +65,6 @@ if __name__ == '__main__':
 	argsParser = argparse.ArgumentParser()
 	argsParser.add_argument('-n', '--n', type=int,
 							default=6, help='dim')
-	argsParser.add_argument('-a', '--alpha', type=float,
-							default=-1, help='Size key')
 	args = argsParser.parse_args()
 
 	n = args.n
@@ -87,7 +85,7 @@ if __name__ == '__main__':
 
 	c = np.random.rand(1, n).transpose()
 	print('c = ', c)
-	d = random.uniform(1.0, 10.0)
+	d = random.uniform(1.0, 100.0)
 	print('d = ', d)
 
 	A_1 = la.inv(A)
