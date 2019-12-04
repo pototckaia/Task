@@ -50,7 +50,7 @@ def f_0(A, b, x):
 
 # f_x = c^T * x + d <= 0
 def f(c, d, x):
-	return c.transpose() @ x + d 
+	return (c.transpose() @ x)[0, 0] + d 
 
 
 import numpy as np
@@ -99,7 +99,7 @@ if __name__ == '__main__':
 	else:
 		# y = (d - c^T * A^-1 * b) / (c^T * A^-1 * c)
 		# x = -A^-1 (b + y * c)
-		y = (d - c.transpose() @ A_1 @ b) / (c.transpose() @ A_1 @ c)
+		y = (d - (c.transpose() @ A_1 @ b)[0, 0]) / (c.transpose() @ A_1 @ c)[0, 0]
 		x = -(A_1 @ (b + y * c))
 		print('min with the condition f(x) <= 0')
 		print(x)
