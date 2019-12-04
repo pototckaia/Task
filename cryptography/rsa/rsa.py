@@ -32,7 +32,7 @@ class Rsa:
     def __calculate_open_key(self, u: int) -> int:
         # gcd(u, e) = 1 and e simple number, example Fermat number
         # having a short bit-length and small Hamming weight 
-        for _ in range(1, 30):
+        for _ in range(1, 10):
             e = self.__randprime(2, u - 1)
             if util.advanced_gcd(u, e)[0] == 1:
                 return e

@@ -28,12 +28,12 @@ def incremental_search(min: int, max: int, maxInter: int, check) -> int:
 	return r
 
 def td_randprime(min: int, max: int):
-	return incremental_search(min, max, 100, util.is_prime_td)
+	return incremental_search(min, max, 10, util.is_prime_td)
 
 def ss_randprime(min: int, max: int) -> int:
-	return rand_search(min, max, 1000, 
+	return rand_search(min, max, 10, 
 		lambda x: util.solovay_strassen(x, 3))
 
 def mr_randprime(min: int, max: int) -> int:
-	return rand_search(min, max, 1000, 
+	return rand_search(min, max, 10, 
 		lambda x: util.miller_rabin_test(x, 3))
