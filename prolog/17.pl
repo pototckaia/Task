@@ -39,8 +39,8 @@ reverse(L,R):-  reverse_d(L,R-[]).
 reverse_d([],X-X).
 reverse_d([H|T],L-X) :- reverse_d(T,L-[H|X]).
 
-dutch_rev(L, BWR-[]) :-
-    distr_re(L, BWR-WR, WR-B, B-[]).
+dutch_rev(L, RWB-[]) :-
+    distr_re(L, RWB-WB, WB-B, B-[]).
 
 distr_re([r(H)|T], R-R1, W, B) :-distr_re(T, R-[r(H)|R1], W, B).
 distr_re([w(H)|T], R, W-W1, B) :-distr_re(T, R, W-[w(H)|W1], B).
