@@ -2,9 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <iomanip>
+#include <random>
 
 #include "c_b0proj.hpp"
-#include <iomanip>
 
 void exportSliceToVec(std::string name, const std::vector<GeoSlicePiece>& slices) {
 	std::ofstream writer(name);
@@ -18,15 +19,15 @@ void exportSliceToVec(std::string name, const std::vector<GeoSlicePiece>& slices
 
 void exportSliceToSvn(std::string name, const std::vector<GeoSlicePiece>& slices) {
 	std::ofstream outFile(name);
-	outFile << "Number;\tx;\ty;\tLongitude;\tLatitude;\tIntensity;\tTemperature (C);\tDistance (km);\n";
+	outFile << "Number;x;y;Longitude;Latitude;Intensity;Temperature (C);Distance (km);" << std::endl;
 	for (std::size_t i = 0; i < slices.size(); ++i) {
 		outFile
 			<< std::setprecision(7)
-			<< i + 1 << ";\t"
-			<< slices[i].x << ";\t" << slices[i].y << ";\t"
-			<< slices[i].lon << ";\t" << slices[i].lat << ";\t"
-			<< slices[i].intensity << ";\t"
-			<< slices[i].celsius << ";\t"
+			<< i + 1 << ";"
+			<< slices[i].x << ";" << slices[i].y << ";"
+			<< slices[i].lon << ";" << slices[i].lat << ";"
+			<< slices[i].intensity << ";"
+			<< slices[i].celsius << ";"
 			<< slices[i].d << std::endl;
 	}
 }
@@ -38,11 +39,11 @@ int main(int argv, char* argc[]) {
 	}
 	int index = 1;
 	if (strcmp(argc[index], "-h") == 0) {
-		std::cout
-			<< "file -toXY lon lat" << std::endl
-			<< "file -toLonLat x y" << std::endl
-			<< "file -I[-g] x y [lon lat]" << std::endl
-			<< "file -slice [-v][-f file] [-g] x1 y1 x2 y2 [lon1 lat1 lon2 lat2]" << std::endl;
+		std::ifstream file("api.txt");
+		std::string str;
+		while (std::getline(file, str)) {
+			std::cout << str << std::endl;
+		}
 		return 0;
 	}
 
@@ -133,5 +134,4 @@ int main(int argv, char* argc[]) {
 			exportSliceToSvn(outFileName, slices);
 		}
 	}
-
 }

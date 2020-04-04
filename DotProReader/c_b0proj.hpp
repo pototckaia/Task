@@ -242,15 +242,34 @@ public:
 	
 	std::vector<std::pair<uint32_t, uint32_t>> getLine(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2) {
 		std::vector<std::pair<uint32_t, uint32_t>> result;
-		auto n = std::max(fabs(int(x1) - int(x2)), fabs(int(y1) - int(y2))) + 1;
-		double dx = (x2 - x1) / n;
-		double dy = (y2 - y1) / n;
-
-		uint32_t x = x1, y = y1;
-		for (int i = 0; i < n; ++i) {
-			result.emplace_back(x, y);
-			x = std::round(x + dx);
-			y = std::round(y + dy);
+		int dy = y2 - y1;
+		int dx = x1 - x2;
+		int signX = dx < 0 ? -1 : 1;
+		int signY = dy < 0 ? -1 : 1;
+		auto x = x1;
+		auto y = y1;
+		int f = 0;
+		if (abs(dy) < abs(dx)) {
+			do {
+				f += dy * signY;
+				if (f > 0) {
+					f -= dx * signX;
+					y += signY;
+				}
+				x -= signX;
+				result.emplace_back(x, y);
+			} while (x != x2 || y != y2);
+		}
+		else {
+			do {
+				f += dx * signX;
+				if (f > 0) {
+					f -= dy * signY;
+					x -= signX;
+				}
+				y += signY;
+				result.emplace_back(x, y);
+			} while (x != x2 || y != y2);
 		}
 		return result;
 	}
