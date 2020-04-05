@@ -71,6 +71,8 @@ struct Projection {
 	double   realLonRes;
 	const double r = 6371.0;
 
+	using slice = std::vector<GeoSlicePiece>;
+
 	void read(std::ifstream& reader) {
 		reader.read(reinterpret_cast<char*>(&b0.formatType), sizeof(b0.formatType));
 		reader.read(b0.satName, 13 * sizeof(char));
@@ -290,5 +292,21 @@ public:
 			lon += dlon; lat += dlat;
 		}
 		return result;
+	}
+
+	std::vector<std::pair<uint32_t, uint32_t>> getNormal(slice& s, uint32_t x0, uint32_t y0, int offset) {
+		std::vector<std::pair<uint32_t, uint32_t>> result;
+		result.emplace_back(x0, y0);
+
+		auto k1 = (int(s.back().y) - int(s.front().y)) / (int(s.back().x) - int(s.front().y));
+		auto b2 = int(y0) + 1 / k1 * int(x0);
+		for (int i = -offset; i <= offset; ++i) {
+			int xn = x0 + i;
+			int yn = std::ceil((-1 / k1) * xn + b2);
+			if (xn >= 0 && xn < b0.columnsNum && yn >= 0 && yn < b0.rowsNum) {
+				result.emplace_back(uint32_t(xn), uint32_t(yn));
+			}
+		}
+		return  result;
 	}
 };

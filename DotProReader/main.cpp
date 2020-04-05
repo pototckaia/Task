@@ -6,6 +6,7 @@
 #include <random>
 
 #include "c_b0proj.hpp"
+#include <numeric>
 
 void exportSliceToVec(std::string name, const std::vector<GeoSlicePiece>& slices) {
 	std::ofstream writer(name);
@@ -33,7 +34,7 @@ void exportSliceToSvn(std::string name, const std::vector<GeoSlicePiece>& slices
 }
 
 int main(int argv, char* argc[]) {
-	
+
 	if (argv == 1) {
 		return 0;
 	}
@@ -58,8 +59,11 @@ int main(int argv, char* argc[]) {
 	proj.read(reader);
 	proj.printf();
 	
+	if (index > argv)
+		return 0;
+
 	std::string type = argc[index++];
-	if (type == "-toLonLat") {
+	if (type == "-toLonLat" && index + 2 <= argv) {
 		uint32_t x = std::stoi(argc[index++]);
 		auto lon = proj.getLonForColumn(x);
 		
@@ -71,7 +75,7 @@ int main(int argv, char* argc[]) {
 			<< "Lon " << lon << std::endl
 			<< "Lat " << lat << std::endl;
 	}
-	else if (type == "-toXY") {
+	else if (type == "-toXY" && index + 2 <= argv) {
 		auto lon = std::atof(argc[index++]);
 		auto column = proj.getColumnForLon(lon);
 		
@@ -83,36 +87,54 @@ int main(int argv, char* argc[]) {
 			<< "Scan " << scan << std::endl;
 	}
 	else if (type == "-I") {
-		uint32_t x, y;
-		if (strcmp(argc[index], "-g") == 0) {
+		uint32_t x = 0, y = 0;
+		if (strcmp(argc[index], "-g") == 0 && index + 3 <= argv) {
 			++index;
 			auto lon = std::atof(argc[index++]);
 			auto lat = std::atof(argc[index++]);
 			x = proj.getColumnForLon(lon);
 			y = proj.getRowForLat(lat);
+			std::cout << "raw " << proj.getRawOfPixel(x, y) << std::endl;
+
 		} 
-		else {
+		else if (index + 2 <= argv) {
 			x = std::stoi(argc[index++]);
 			y = std::stoi(argc[index++]);
+			std::cout << "raw " << proj.getRawOfPixel(x, y) << std::endl;
 		}
-		std::cout
-			<< "raw " << proj.getRawOfPixel(x, y) << std::endl;
 	}
 	else if (type == "-slice") {
 		std::string outFileName = "line.csv";
 		bool saveVector = false;
-		if (strcmp(argc[index], "-v") == 0) {
+		if (index <= argv && strcmp(argc[index], "-v") == 0) {
 			outFileName = "line.vec";
 			++index;
 			saveVector = true;
 		}
-		if (strcmp(argc[index], "-f") == 0) {
+		if (index + 1 <= argv && strcmp(argc[index], "-f") == 0) {
 			++index;
 			outFileName = argc[index++];
 		}
 
+		int n = -1;
+		bool isStd = true;
+		if (index <= argv && strcmp(argc[index], "-normal") == 0) {
+			++index;
+			if (index <= argv && strcmp(argc[index], "-med") == 0) {
+				++index;
+				isStd = false;
+			}
+			else if (index <= argv && strcmp(argc[index], "-std") == 0) {
+				++index;
+			}
+			if (index + 1 <= argv && strcmp(argc[index], "-n") == 0) {
+				++index;
+				n = std::stoi(argc[index++]);
+			}
+		}
+
 		std::vector<GeoSlicePiece> slices;
-		if (strcmp(argc[index], "-g") == 0) {
+		if (index + 4 <= argv && strcmp(argc[index], "-g") == 0) {
 			++index;
 			auto lon1 = std::atof(argc[index++]);
 			auto lat1 = std::atof(argc[index++]);
@@ -120,13 +142,41 @@ int main(int argv, char* argc[]) {
 			auto lat2 = std::atof(argc[index++]);
 			slices = proj.getSlice(lon1, lat1, lon2, lat2);
 		}
-		else {
+		else if (index + 4 <= argv) {
 			uint32_t x1 = std::stoi(argc[index++]);
 			uint32_t y1 = std::stoi(argc[index++]);
 			uint32_t x2 = std::stoi(argc[index++]);
 			uint32_t y2 = std::stoi(argc[index++]);
 			slices = proj.getSlice(x1, y1, x2, y2);
 		}
+		
+		if (n > 0) {
+			for (auto slice : slices) {
+				auto normal = proj.getNormal(slices, slice.x, slice.y, n);
+				std::vector<int> intensities;
+				std::vector<int> celsiuses;
+				for (auto [x, y] : normal) {
+					intensities.emplace_back(proj.getRawOfPixel(x, y));
+					celsiuses.emplace_back(proj.getGetOfPixel(x, y));
+				}
+				
+				if (isStd) {
+					slice.intensity = std::ceil(std::accumulate(intensities.begin(), intensities.end(), 0) / intensities.size());
+					slice.celsius = std::accumulate(celsiuses.begin(), celsiuses.end(), 0) / celsiuses.size();
+				}
+				else {
+					auto median_it = intensities.begin() + intensities.size() / 2;
+					std::nth_element(intensities.begin(), median_it, intensities.end());
+					slice.intensity = *median_it;
+					
+					median_it = celsiuses.begin() + celsiuses.size() / 2;
+					std::nth_element(celsiuses.begin(), median_it, celsiuses.end());
+					slice.celsius = *median_it;
+				}
+			}
+		}
+
+
 		if (saveVector) {
 			exportSliceToVec(outFileName, slices);
 		}
