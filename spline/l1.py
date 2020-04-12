@@ -77,8 +77,12 @@ def plot(n, configuration):
 
     x_dots = np.linspace(configuration["x_start"], configuration["x_end"], num=n)
     y_dots = np.array([true_func(x_) for x_ in x_dots])
-    s_dots = np.array([s(x_, x_dots, y_dots, configuration["m_res"]) for x_ in x_dots])
-    
+    x = np.linspace(configuration["x_start"], 
+                    configuration["x_end"], 
+                    num=configuration["n"])
+    y = configuration["y"]
+    s_dots = np.array([s(x_, x, y, configuration["m_res"]) for x_ in x_dots])
+
     plt.plot(x_dots, y_dots, label="func")
     plt.plot(x_dots, s_dots, label="spline")
     plt.legend()
@@ -90,7 +94,7 @@ def plot(n, configuration):
 
 def main(conf):
     conf["m_res"] = setUp(conf)
-    plot(conf["n"], conf)
+    plot(1000, conf)
 
 def func1(a, x):
     return np.sin(a * x)
@@ -99,7 +103,7 @@ def func1dx(a, x):
     return a * np.cos(a * x)
 
 def func1app(a, x):
-    offset = random.uniform(0.5, 1)
+    offset = random.uniform(0.01, 0.3)
     return func1(a, x) + offset 
 
 def func1dxapp(a, x):
