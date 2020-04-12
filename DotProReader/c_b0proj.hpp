@@ -62,7 +62,7 @@ struct GeoSlicePiece {
 	double d;
 	uint32_t x, y;
 	double lon, lat;
-	uint32_t intensity, celsius;
+	int32_t intensity, celsius;
 };
 
 struct Projection {
@@ -154,13 +154,14 @@ private:
 
 public:
 
-	uint32_t getRawOfPixel(uint32_t x, uint32_t y) {
+	int32_t getRawOfPixel(uint32_t x, uint32_t y) {
 		return b0.raw[(x + (b0.columnsNum * (b0.rowsNum - y - 1)))];
 	}
 
-	uint32_t getGetOfPixel(uint32_t x, uint32_t y) {
+	int32_t getGeoOfPixel(uint32_t x, uint32_t y) {
 		auto value = getRawOfPixel(x, y);
-		return value < 0 ? -999 : value * b0.ka + b0.kb;
+		auto geo = value * b0.ka + b0.kb;
+		return value < 0 ? -999 : std::floor(geo);
 	}
 
 	double getLonForColumn(uint32_t x) const {
@@ -208,7 +209,7 @@ public:
 		auto lonBRad = toRad(lon2);
 		auto latARad = toRad(lat1);
 		auto latBRad = toRad(lat2);
-		return  r * acos(sin(latARad) * sin(latBRad) + cos(latARad) * cos(latBRad) * cos(lonARad - lonBRad));
+		return  r * acos(sin(latARad) * sin(latBRad) + cos(latARad) * cos(latBRad) * cos(lonARad - lonBRad)	);
 	}
 
 	std::vector<GeoSlicePiece> getSlice(uint32_t startX, uint32_t startY, uint32_t endX, uint32_t endY) {
@@ -221,7 +222,7 @@ public:
 			slice[i].d = getDirection(slice[i].lon, slice[i].lat,
 				getLonForColumn(line[0].first), getLatForRow(line[0].second));
 			slice[i].intensity = getRawOfPixel(slice[i].x, slice[i].y);
-			slice[i].celsius = getGetOfPixel(slice[i].x, slice[i].y);
+			slice[i].celsius = getGeoOfPixel(slice[i].x, slice[i].y);
 		}
 		return slice;
 	}
@@ -237,7 +238,7 @@ public:
 				slice[i].lon, slice[i].lat,
 				line[0].first, line[0].second);
 			slice[i].intensity = getRawOfPixel(slice[i].x, slice[i].y);
-			slice[i].celsius = getGetOfPixel(slice[i].x, slice[i].y);
+			slice[i].celsius = getGeoOfPixel(slice[i].x, slice[i].y);
 		}
 		return slice;
 	}

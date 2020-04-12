@@ -1,6 +1,0 @@
-<path_to_file> -toXY <lon> <lat>
-<path_to_file> -toLonLat <x> <y>
-<path_to_file> -I <x> <y> 
-<path_to_file> -I -g <lon> <lat>
-<path_to_file> -slice [-v][-f file] [-normal [-std | -med] -n <offset_pixel>] <x1> <y1> <x2> <y2>
-<path_to_file> -slice [-v][-f file] [-normal [-std | -med] -n <offset_pixel>] -g <lon1> <lat1> <lon2> <lat2>
