@@ -34,10 +34,10 @@ def main(conf):
     print(abs(true_res - res))
 
 def func1(a, x):
-    return np.sin(a * x) + random.uniform(0, 1)
+    return np.sin(a * x)
 
-def func1offset(a, x):
-    return func1(a, x) + random.uniform(0, 0.5)
+def func1app(a, x):
+    return func1(a, x) + random.uniform(-0.1, 0.1)
 
 def func1dx(a, x):
     return a * np.cos(a * x)
@@ -46,9 +46,6 @@ def func1dxapp(a, x):
     dx = 0.1
     return (func1(a, x + dx) - func1(a, x)) / dx
 
-def func1dxran(a, x):
-    return random.uniform(0, x)
-
 def func1int(a, x):
     return -(1/a) * np.cos(a*x)
 
@@ -56,8 +53,8 @@ def func1int(a, x):
 def func2(a, x):
     return a / (1 + 9 * np.power(x, 2))
 
-def func2offset(a, x):
-    return func2(a, x) + random.uniform(0, 0.5)
+def func2app(a, x):
+    return func2(a, x) + random.uniform(-0.1, 0.1)
 
 def func2dx(a, x):
     return -18 * a * x / np.power(9 * np.power(x, 2) + 1, 2)
@@ -66,22 +63,19 @@ def func2dxapp(a, x):
     dx = 0.1
     return (func2(a, x + dx) - func2(a, x)) / dx
 
-def func2dxran(a, x):
-    return random.uniform(0, x)
-
 def func2int(a, x):
     return np.arctan(3*x) * (a/3)
 
 configurations = [
-    {"func": func1, "funcint": func1int, "diff": func1dx, "a": 3, "n": 100, "x_start": 0, "x_end": np.pi},
-    {"func": func1, "funcint": func1int, "diff": func1dxapp, "a": 3, "n": 100, "x_start": 0, "x_end": np.pi},
-    {"func": func1, "funcint": func1int, "diff": func1dxran, "a": 3, "n": 100, "x_start": 0, "x_end": np.pi},
-    {"func": func1offset, "funcint": func1int, "diff": func1dxapp, "a": 3, "n": 100, "x_start": 0, "x_end": np.pi},
+    {"a": 8, "n": 50, "x_start": -1, "x_end": 1, "funcint": func2int, "func": func2, "diff": func2dx},
+    {"a": 8, "n": 50, "x_start": -1, "x_end": 1, "funcint": func2int, "func": func2app, "diff": func2dx},
+    {"a": 8, "n": 50, "x_start": -1, "x_end": 1, "funcint": func2int, "func": func2, "diff": func2dxapp},
+    {"a": 8, "n": 50, "x_start": -1, "x_end": 1, "funcint": func2int, "func": func2app, "diff": func2dxapp},
 
-    {"func": func2, "funcint": func2int, "diff": func2dx, "a": 8, "n": 100, "x_start": -1, "x_end": 1},
-    {"func": func2, "funcint": func2int, "diff": func2dxapp, "a": 8, "n": 100, "x_start": -1, "x_end": 1},
-    {"func": func2, "funcint": func2int, "diff": func2dxran, "a": 8, "n": 100, "x_start": -1, "x_end": 1},
-    {"func": func2offset, "funcint": func2int, "diff": func2dxapp, "a": 8, "n": 100, "x_start": -1, "x_end": 1},
+    {"a": 8, "n": 100, "x_start": -1, "x_end": 1, "funcint": func2int, "func": func2, "diff": func2dx},
+    {"a": 8, "n": 100, "x_start": -1, "x_end": 1, "funcint": func2int, "func": func2app, "diff": func2dx},
+    {"a": 8, "n": 100, "x_start": -1, "x_end": 1, "funcint": func2int, "func": func2, "diff": func2dxapp},
+    {"a": 8, "n": 100, "x_start": -1, "x_end": 1, "funcint": func2int, "func": func2app, "diff": func2dxapp},
 ]
 
 if __name__ == "__main__":
